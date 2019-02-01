@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Buddy</string>
+    <string name="add_btn_text">ADD</string>
+    <string name="setting_btn_text">Settings</string>
+    <string name="save_btn_text">Save</string>
 </resources>

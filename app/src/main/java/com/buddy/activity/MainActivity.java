@@ -1,16 +1,24 @@
 package com.buddy.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
-import com.buddy.adapters.TaskListLayoutAdapter;
+import com.buddy.adapters.TaskListAdapter;
 import com.buddy.entity.Task;
 import com.buddy.main.R;
+import com.buddy.viewmodel.TaskViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,49 +26,80 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mTaskListRecycleView;
-    private RecyclerView.Adapter mTaskListAdapter;
-    private RecyclerView.LayoutManager mTaskListLayoutManager;
+
     private List<Task> taskList = new ArrayList<>();
+
+    private TaskViewModel mTaskViewModel;
+
+    private final int NEW_EDIT_TASK_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Add toolbar
-        Toolbar mainToolBar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolBar);
-
+        // Get recycleView to populate a list of tasks
         mTaskListRecycleView = (RecyclerView) findViewById(R.id.my_task_list);
 
         // use a LinearLayout Manager
-        mTaskListLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mTaskListLayoutManager = new LinearLayoutManager(this);
         mTaskListRecycleView.setLayoutManager(mTaskListLayoutManager);
         mTaskListRecycleView.setItemAnimator(new DefaultItemAnimator());
 
         // add divider
-        mTaskListRecycleView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        mTaskListRecycleView.addItemDecoration(new DividerItemDecoration(
+                this, LinearLayoutManager.VERTICAL));
 
         // specify an adapter
-        mTaskListAdapter = new TaskListLayoutAdapter(taskList);
+        final TaskListAdapter mTaskListAdapter = new TaskListAdapter(this);
         mTaskListRecycleView.setAdapter(mTaskListAdapter);
 
-        prepareTaskData();
+        mTaskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        mTaskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(@Nullable List<Task> tasks) {
+                // Update the cached copy of the words in the adapter.
+                mTaskListAdapter.setTasks(tasks);
+            }
+        });
     }
 
-    private void prepareTaskData() {
-        // Task task1 = new Task("Meet the Prof", "Discuss the assignment");
-        // taskList.add(task1);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_toolbar_menu, menu);
+        return true;
+    }
 
-        Task task2 = new Task("Interview with Google", "Algorithms");
-        taskList.add(task2);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-        Task task3 = new Task("Interview with IBM", "System Design");
-        taskList.add(task3);
+    /*
+    * This function is revoked when user click Add or Edit a Task
+    * */
+    public void newEditTask(MenuItem view) {
+        Intent newEditIntent = new Intent(this, NewEditTaskActivity.class);
+        startActivityForResult(newEditIntent, NEW_EDIT_TASK_REQUEST);
+    }
 
-        Task task4 = new Task("Interview with SAP", "Agile PM");
-        taskList.add(task4);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        mTaskListAdapter.notifyDataSetChanged();
+        if (requestCode == NEW_EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            Task task = new Task(data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_NAME),
+                    data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_DESC));
+            mTaskViewModel.insert(task);
+        } else {
+            Toast.makeText(getApplicationContext(), "Not Saved", Toast.LENGTH_LONG).show();
+        }
     }
 }
