@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "task")
 public class Task {
-
     @PrimaryKey(autoGenerate = true)
     private int id;
 

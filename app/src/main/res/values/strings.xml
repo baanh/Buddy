@@ -3,4 +3,6 @@
     <string name="add_btn_text">ADD</string>
     <string name="setting_btn_text">Settings</string>
     <string name="save_btn_text">Save</string>
+    <string name="edit_task_name_hint">Task name</string>
+    <string name="edit_task_desc_hint">Task description</string>
 </resources>

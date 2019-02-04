@@ -14,4 +14,9 @@
         android:title="@string/setting_btn_text"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_delete_all_tasks"
+        android:title="Delete all tasks"
+        app:showAsAction="never"/>
+
 </menu>

@@ -14,24 +14,40 @@ import java.util.List;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> {
 
-    public static class TaskViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView taskName;
-        public TextView taskDescription;
+    public class TaskViewHolder extends RecyclerView.ViewHolder {
+        private TextView taskName;
+        private TextView taskDescription;
 
         public TaskViewHolder(View view) {
             super(view);
             taskName = (TextView) view.findViewById(R.id.task_name);
             taskDescription = (TextView) view.findViewById(R.id.task_description);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (itemClickListener != null && position != RecyclerView.NO_POSITION) {
+                        itemClickListener.onItemClick(mTasks.get(position));
+                    }
+                }
+            });
         }
     }
 
     private final LayoutInflater mInflater;
+
     private List<Task> mTasks;
+    private OnItemClickListener itemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
 
     public TaskListAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
     }
+
 
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -58,12 +74,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         notifyDataSetChanged();
     }
 
+    public Task getTaskAt(int position) {
+        return mTasks.get(position);
+    }
+
     @Override
     public int getItemCount() {
         if (mTasks != null) {
             return mTasks.size();
         }
         return 0;
+    }
+
+    public static interface OnItemClickListener {
+        void onItemClick(Task task);
     }
 }
 
