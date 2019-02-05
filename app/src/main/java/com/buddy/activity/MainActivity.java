@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 this, LinearLayoutManager.VERTICAL));
 
         // specify an adapter
-        final TaskListAdapter mTaskListAdapter = new TaskListAdapter(this);
-
+        final TaskListAdapter mTaskListAdapter = new TaskListAdapter();
         // Set onClick listener for list items in recycle view
         mTaskListAdapter.setOnItemClickListener(this);
         mTaskListRecycleView.setAdapter(mTaskListAdapter);
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
                 // Update the cached copy of the words in the adapter.
-                mTaskListAdapter.setTasks(tasks);
+                mTaskListAdapter.submitList(tasks);
             }
         });
 
