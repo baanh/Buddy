@@ -19,7 +19,7 @@ public abstract class BuddyRoomDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "buddy_database";
 
-    public static synchronized BuddyRoomDatabase getDatabase(final Context context) {
+    public static BuddyRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (BuddyRoomDatabase.class) {
                 if (INSTANCE == null) {

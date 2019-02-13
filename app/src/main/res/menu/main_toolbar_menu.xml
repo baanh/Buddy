@@ -6,6 +6,7 @@
     <item
         android:id="@+id/action_favorite"
         android:onClick="newEditTask"
+        android:icon="@drawable/ic_calendar_plus"
         android:title="@string/add_btn_text"
         app:showAsAction="ifRoom" />
 
