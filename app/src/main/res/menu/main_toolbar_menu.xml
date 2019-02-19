@@ -4,6 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/push_notifications"
+        android:title="Notify"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_favorite"
         android:onClick="newEditTask"
         android:title="@string/add_btn_text"
