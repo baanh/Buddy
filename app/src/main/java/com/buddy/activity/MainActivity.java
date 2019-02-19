@@ -3,6 +3,7 @@ package com.buddy.activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -171,7 +172,16 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(contentIntent);
 
-        mBuilder.setContentTitle("Hello").setContentText("Boo").setSmallIcon(R.mipmap.ic_launcher);
-        notificationManager.notify(1, mBuilder.build());
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+
+        LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
+
+        for (int i = 0; i < taskList.getValue().size(); i++) {
+            mBuilder
+                    .setContentTitle(taskList.getValue().get(i).getName())
+                    .setContentText(taskList.getValue().get(i).getDescription());
+            notificationManager.notify(i, mBuilder.build());
+        }
+
     }
 }
