@@ -18,8 +18,9 @@
         </activity>
         <activity
             android:name="com.buddy.activity.TaskNewEditActivity"
-            android:label="New Task"></activity>
-        <activity android:name="com.buddy.activity.TaskGroupSelectActivity"></activity>
+            android:label="New Task" />
+        <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
+        <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
     </application>
 
 </manifest>

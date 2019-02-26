@@ -24,6 +24,11 @@ public class DateTimePickerFragment extends DialogFragment {
     private int hour;
     private int minute;
 
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -41,7 +46,7 @@ public class DateTimePickerFragment extends DialogFragment {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 DateTimePickerFragment.this.year = year;
-                DateTimePickerFragment.this.month = monthOfYear;
+                DateTimePickerFragment.this.month = monthOfYear + 1;
                 DateTimePickerFragment.this.dayOfMonth = dayOfMonth;
             }
         });
@@ -50,7 +55,7 @@ public class DateTimePickerFragment extends DialogFragment {
         timePicker.setCurrentHour(hour);
         timePicker.setCurrentMinute(minute);
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            public void onTimeChanged(TimePicker view, int hour, int min) {
+            public void onTimeChanged(TimePicker view, int hour, int minute) {
                 DateTimePickerFragment.this.hour = hour;
                 DateTimePickerFragment.this.minute = minute;
             }

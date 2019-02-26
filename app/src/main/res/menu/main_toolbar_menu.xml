@@ -16,6 +16,11 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/action_new_category"
+        android:title="New Category"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_delete_all_tasks"
         android:title="Delete all tasks"
         app:showAsAction="never"/>

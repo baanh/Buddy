@@ -66,7 +66,9 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder viewHolder1) {
                 return false;
             }
 
@@ -94,6 +96,10 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             case R.id.action_delete_all_tasks:
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_new_category:
+                Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
+                startActivity(newCategoryIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

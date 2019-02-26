@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private EditText editTaskDescription;
     private RelativeLayout startTime;
     private RelativeLayout endTime;
+    private LinearLayout categorySelect;
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
@@ -51,7 +53,24 @@ public class TaskNewEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DialogFragment dateTimePickerFragment = new DateTimePickerFragment();
-                dateTimePickerFragment.show(getSupportFragmentManager(), "timePicker");
+                dateTimePickerFragment.show(getSupportFragmentManager(), "startTimePicker");
+            }
+        });
+
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dateTimePickerFragment = new DateTimePickerFragment();
+                dateTimePickerFragment.show(getSupportFragmentManager(), "endTimePicker");
+            }
+        });
+
+        categorySelect = (LinearLayout) findViewById(R.id.category_select_view);
+        categorySelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment categorySelectionFragment = new CategorySelectionFragment();
+                categorySelectionFragment.show(getSupportFragmentManager(), "categorySelection");
             }
         });
     }
@@ -82,5 +101,10 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
         setResult(RESULT_OK, response);
         finish();
+    }
+
+    public void selectCategory(View view) {
+
+
     }
 }
