@@ -1,7 +1,7 @@
 package com.buddy.adapters;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import java.util.List;
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
     private final LayoutInflater mInflater;
     private List<Category> categoryList;
+    private Category selectedItem;
 
     public CategoryListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -27,10 +28,17 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         notifyDataSetChanged();
     }
 
+    public Category getSelectedItem() {
+        if (selectedItem == null) {
+            selectedItem = categoryList.get(0);
+        }
+        return selectedItem;
+    }
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide all access to all the views for a data item in a view holder
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
+    public class CategoryViewHolder extends RecyclerView.ViewHolder {
         public TextView categoryName;
 
         public CategoryViewHolder(View itemView) {
@@ -47,10 +55,17 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     }
 
     @Override
-    public void onBindViewHolder(CategoryViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final CategoryViewHolder viewHolder, final int position) {
         if (categoryList != null) {
-            Category category = categoryList.get(position);
+            final Category category = categoryList.get(position);
             viewHolder.categoryName.setText(category.getName());
+            viewHolder.categoryName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedItem = category;
+                    viewHolder.categoryName.setBackgroundColor(Color.parseColor("#C0C0C0"));
+                }
+            });
         } else {
             viewHolder.categoryName.setText("No Category found");
         }
