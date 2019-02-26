@@ -65,7 +65,7 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         }
     }
 
-    public static interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(Task task);
     }
 

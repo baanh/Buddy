@@ -130,6 +130,14 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
             Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
                     data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
+
+            int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+            if (categoryId == -1) {
+                Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
+                return;
+            }
+            task.setCategoryId(categoryId);
+
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {

@@ -13,18 +13,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.buddy.entity.Category;
 import com.buddy.main.R;
 
-public class TaskNewEditActivity extends AppCompatActivity {
+public class TaskNewEditActivity extends AppCompatActivity
+        implements CategorySelectionFragment.CategorySelectionDialogListener {
     private EditText editTaskName;
     private EditText editTaskDescription;
     private RelativeLayout startTime;
     private RelativeLayout endTime;
     private LinearLayout categorySelect;
+    private Category selectedCategory;
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
     public static final String EXTRA_DESC = "com.buddy.tasklistsql.EXTRA_DESC";
+    public static final String EXTRA_CATEGORY_ID = "com.buddy.tasklistsql.EXTRA_CATEGORY_ID";
     public static final String EXTRA_REPLY_NAME = "com.buddy.tasklistsql.REPLY_NAME";
     public static final String EXTRA_REPLY_DESC = "com.buddy.tasklistsql.REPLY_DESC";
 
@@ -84,6 +88,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     public void saveTask(MenuItem view) {
         String name = editTaskName.getText().toString();
         String description = editTaskDescription.getText().toString();
+        int categoryId = this.selectedCategory.getId();
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "Please insert a name and description", Toast.LENGTH_LONG).show();
@@ -93,6 +98,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         Intent response = new Intent();
         response.putExtra(EXTRA_REPLY_NAME, name);
         response.putExtra(EXTRA_REPLY_DESC, description);
+        response.putExtra(EXTRA_CATEGORY_ID, categoryId);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -103,8 +109,8 @@ public class TaskNewEditActivity extends AppCompatActivity {
         finish();
     }
 
-    public void selectCategory(View view) {
-
-
+    @Override
+    public void setSelectedCategory(Category selectedCategory) {
+        this.selectedCategory = selectedCategory;
     }
 }

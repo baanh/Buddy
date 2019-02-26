@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +27,7 @@ public class CategorySelectionFragment extends DialogFragment {
     private RecyclerView recycleView;
     private CategoryViewModel categoryViewModel;
     private Button btnNewCategory;
+    private CategorySelectionDialogListener listener;
 
     @NonNull
     @Override
@@ -49,7 +52,8 @@ public class CategorySelectionFragment extends DialogFragment {
         btnNewCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent newEditIntent = new Intent(getActivity(), CategoryNewEditActivity.class);
+                startActivity(newEditIntent);
             }
         });
 
@@ -60,9 +64,23 @@ public class CategorySelectionFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        listener.setSelectedCategory(mAdapter.getSelectedItem());
                     }
                 })
                 .create();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (CategorySelectionDialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "Must implement Category Selection Listener");
+        }
+    }
+
+    public interface CategorySelectionDialogListener {
+        void setSelectedCategory(Category selectedCategory);
     }
 }
