@@ -18,7 +18,6 @@ import com.buddy.main.R;
 public class TaskNewEditActivity extends AppCompatActivity
         implements CategorySelectionFragment.CategorySelectionDialogListener {
 
-public class TaskNewEditActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskDescription;
     private RelativeLayout startTime;
