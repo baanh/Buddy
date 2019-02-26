@@ -12,12 +12,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import com.buddy.entity.Category;
 import com.buddy.main.R;
 
 public class TaskNewEditActivity extends AppCompatActivity
         implements CategorySelectionFragment.CategorySelectionDialogListener {
+
+public class TaskNewEditActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskDescription;
     private RelativeLayout startTime;
@@ -29,6 +30,7 @@ public class TaskNewEditActivity extends AppCompatActivity
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
     public static final String EXTRA_DESC = "com.buddy.tasklistsql.EXTRA_DESC";
     public static final String EXTRA_CATEGORY_ID = "com.buddy.tasklistsql.EXTRA_CATEGORY_ID";
+
     public static final String EXTRA_REPLY_NAME = "com.buddy.tasklistsql.REPLY_NAME";
     public static final String EXTRA_REPLY_DESC = "com.buddy.tasklistsql.REPLY_DESC";
 
