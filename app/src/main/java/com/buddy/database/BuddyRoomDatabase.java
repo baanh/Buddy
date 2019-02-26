@@ -7,19 +7,23 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.buddy.dao.CategoryDao;
 import com.buddy.dao.TaskDao;
+import com.buddy.entity.Category;
 import com.buddy.entity.Task;
 
-@Database(entities = {Task.class}, version = 3)
+@Database(entities = {Task.class, Category.class}, version = 2)
 public abstract class BuddyRoomDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
+    public abstract CategoryDao categoryDao();
 
     private static volatile BuddyRoomDatabase INSTANCE;
 
     private static final String DATABASE_NAME = "buddy_database";
 
-    public static synchronized BuddyRoomDatabase getDatabase(final Context context) {
+    public static BuddyRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (BuddyRoomDatabase.class) {
                 if (INSTANCE == null) {
@@ -45,15 +49,20 @@ public abstract class BuddyRoomDatabase extends RoomDatabase {
 
     private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void> {
         private TaskDao taskDao;
+        private CategoryDao categoryDao;
 
         private PopulateDbAsyncTask(BuddyRoomDatabase db) {
             taskDao = db.taskDao();
+            categoryDao = db.categoryDao();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            taskDao.insert(new Task("Name 1", "Description 1"));
-            taskDao.insert(new Task("Name 2", "Description 2"));
+            Category category = new Category("Work");
+            categoryDao.insert(category);
+            Task task = new Task("Task 1", "Description 1");
+            task.setCategoryId(categoryDao.getAllCategories().getValue().get(0).getId());
+            taskDao.insert(new Task("Task 1", "Description 1"));
             return null;
         }
     }

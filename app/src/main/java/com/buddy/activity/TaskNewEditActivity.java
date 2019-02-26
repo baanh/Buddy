@@ -1,21 +1,26 @@
 package com.buddy.activity;
 
 import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.buddy.main.R;
 
-public class NewEditTaskActivity extends AppCompatActivity {
+public class TaskNewEditActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskDescription;
+    private RelativeLayout startTime;
+    private RelativeLayout endTime;
+    private LinearLayout categorySelect;
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
@@ -40,6 +45,34 @@ public class NewEditTaskActivity extends AppCompatActivity {
         } else {
             setTitle("New Task");
         }
+
+        startTime = (RelativeLayout) findViewById(R.id.start_time_view);
+        endTime = (RelativeLayout) findViewById(R.id.end_time_view);
+
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dateTimePickerFragment = new DateTimePickerFragment();
+                dateTimePickerFragment.show(getSupportFragmentManager(), "startTimePicker");
+            }
+        });
+
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dateTimePickerFragment = new DateTimePickerFragment();
+                dateTimePickerFragment.show(getSupportFragmentManager(), "endTimePicker");
+            }
+        });
+
+        categorySelect = (LinearLayout) findViewById(R.id.category_select_view);
+        categorySelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment categorySelectionFragment = new CategorySelectionFragment();
+                categorySelectionFragment.show(getSupportFragmentManager(), "categorySelection");
+            }
+        });
     }
 
     @Override
@@ -68,5 +101,10 @@ public class NewEditTaskActivity extends AppCompatActivity {
 
         setResult(RESULT_OK, response);
         finish();
+    }
+
+    public void selectCategory(View view) {
+
+
     }
 }

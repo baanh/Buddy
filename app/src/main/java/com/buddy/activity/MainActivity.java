@@ -20,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.buddy.adapters.TaskListAdapter;
@@ -73,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder viewHolder1) {
                 return false;
             }
 
@@ -105,6 +106,10 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
+            case R.id.action_new_category:
+                Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
+                startActivity(newCategoryIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -114,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     * This function is revoked when user click Add or Edit a Task
     * */
     public void newEditTask(MenuItem view) {
-        Intent newEditIntent = new Intent(this, NewEditTaskActivity.class);
-        startActivityForResult(newEditIntent, NEW_TASK_REQUEST);
+        Intent newTaskIntent = new Intent(this, TaskNewEditActivity.class);
+        startActivityForResult(newTaskIntent, NEW_TASK_REQUEST);
     }
 
     @Override
@@ -123,20 +128,20 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
-            Task task = new Task(data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_NAME),
-                    data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_DESC));
+            Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
+                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(NewEditTaskActivity.EXTRA_ID, -1);
+            int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
 
             if (id == -1) {
                 Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            Task task = new Task(data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_NAME),
-                    data.getStringExtra(NewEditTaskActivity.EXTRA_REPLY_DESC));
+            Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
+                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
             task.setId(id);
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
@@ -147,10 +152,10 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
     @Override
     public void onItemClick(Task task) {
-        Intent intent = new Intent(this, NewEditTaskActivity.class);
-        intent.putExtra(NewEditTaskActivity.EXTRA_ID, task.getId());
-        intent.putExtra(NewEditTaskActivity.EXTRA_NAME, task.getName());
-        intent.putExtra(NewEditTaskActivity.EXTRA_DESC, task.getDescription());
+        Intent intent = new Intent(this, TaskNewEditActivity.class);
+        intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
+        intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
+        intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
     }
 
