@@ -1,10 +1,16 @@
 package com.buddy.activity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -89,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.push_notifications:
+                pushNotifications();
+                return true;
             case R.id.action_favorite:
                 return true;
             case R.id.action_settings:
@@ -148,5 +157,36 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
         intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
+    }
+
+    public void pushNotifications() {
+        String channelID = "001";
+        CharSequence channelName = "First Channel";
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName, importance);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(contentIntent);
+
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+
+        LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
+
+        for (int i = 0; i < taskList.getValue().size(); i++) {
+            mBuilder
+                    .setContentTitle(taskList.getValue().get(i).getName())
+                    .setContentText(taskList.getValue().get(i).getDescription());
+            notificationManager.notify(i, mBuilder.build());
+        }
+
     }
 }
