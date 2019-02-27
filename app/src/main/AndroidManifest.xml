@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.buddy.main">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/icon_launcher_custom"
@@ -12,7 +16,6 @@
         <activity android:name="com.buddy.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -22,6 +25,7 @@
         <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
         <activity android:name="com.buddy.activity.NotesActivity"/>
+        <activity android:name="com.buddy.util.Contact" />
     </application>
 
 </manifest>
