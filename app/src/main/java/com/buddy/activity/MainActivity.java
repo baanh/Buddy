@@ -207,6 +207,5 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                     .setContentText(taskList.getValue().get(i).getDescription());
             notificationManager.notify(i, mBuilder.build());
         }
-
     }
 }
