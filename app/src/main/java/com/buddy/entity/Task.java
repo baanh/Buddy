@@ -21,6 +21,9 @@ public class Task {
     @ColumnInfo(name = "description")
     private String description;
 
+    @ColumnInfo(name = "notes")
+    private String notes;
+
     @ColumnInfo(name = "categoryId")
     private int categoryId;
 
@@ -51,6 +54,14 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public int getCategoryId() {

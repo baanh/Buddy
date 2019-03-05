@@ -40,6 +40,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_select_view" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_task_description">
+        <Button
+            android:id="@+id/notesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notes"
+            android:onClick="openNotes"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp" />
+
+        <EditText
+            android:id="@+id/notesGist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notes Gist"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:editable="false"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp" />
+
+    </LinearLayout>
+
     <Switch
         android:id="@+id/switch_all_day"
         android:layout_width="0dp"
@@ -180,5 +214,7 @@
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/edit_location"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 </android.support.constraint.ConstraintLayout>

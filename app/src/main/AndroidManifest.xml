@@ -21,6 +21,7 @@
             android:label="New Task" />
         <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
+        <activity android:name="com.buddy.activity.NotesActivity"/>
     </application>
 
 </manifest>

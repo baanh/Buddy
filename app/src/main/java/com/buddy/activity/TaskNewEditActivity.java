@@ -5,12 +5,15 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.buddy.entity.Category;
 import com.buddy.main.R;
@@ -18,17 +21,23 @@ import com.buddy.main.R;
 public class TaskNewEditActivity extends AppCompatActivity
         implements CategorySelectionFragment.CategorySelectionDialogListener {
 
+    private static final String TAG = "Notes: ";
     private EditText editTaskName;
     private EditText editTaskDescription;
     private RelativeLayout startTime;
     private RelativeLayout endTime;
     private LinearLayout categorySelect;
     private Category selectedCategory;
+    private Button notesButton;
+    private EditText notesGist;
+
+    private String notesData = "";
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
     public static final String EXTRA_DESC = "com.buddy.tasklistsql.EXTRA_DESC";
     public static final String EXTRA_CATEGORY_ID = "com.buddy.tasklistsql.EXTRA_CATEGORY_ID";
+    public static final String EXTRA_NOTES = "com.buddy.tasklistsql.EXTRA_NOTES";
 
     public static final String EXTRA_REPLY_NAME = "com.buddy.tasklistsql.REPLY_NAME";
     public static final String EXTRA_REPLY_DESC = "com.buddy.tasklistsql.REPLY_DESC";
@@ -40,6 +49,8 @@ public class TaskNewEditActivity extends AppCompatActivity
 
         editTaskName = (EditText) findViewById(R.id.edit_task_name);
         editTaskDescription = (EditText) findViewById(R.id.edit_task_description);
+        notesButton = findViewById(R.id.notesButton);
+        notesGist = findViewById(R.id.notesGist);
 
         Intent intent = getIntent();
 
@@ -47,8 +58,11 @@ public class TaskNewEditActivity extends AppCompatActivity
             setTitle("Edit Task");
             editTaskName.setText(intent.getStringExtra(EXTRA_NAME));
             editTaskDescription.setText(intent.getStringExtra(EXTRA_DESC));
+            notesData = intent.getStringExtra(EXTRA_NOTES);
+            displayGist();
         } else {
             setTitle("New Task");
+            displayGist();
         }
 
         startTime = (RelativeLayout) findViewById(R.id.start_time_view);
@@ -100,6 +114,7 @@ public class TaskNewEditActivity extends AppCompatActivity
         response.putExtra(EXTRA_REPLY_NAME, name);
         response.putExtra(EXTRA_REPLY_DESC, description);
         response.putExtra(EXTRA_CATEGORY_ID, categoryId);
+        response.putExtra(EXTRA_NOTES, notesData);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -113,5 +128,31 @@ public class TaskNewEditActivity extends AppCompatActivity
     @Override
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
+    }
+
+    public void openNotes(View view) {
+        Intent intent = new Intent(TaskNewEditActivity.this, NotesActivity.class    );
+        intent.putExtra(EXTRA_NOTES, notesData);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                notesData = data.getStringExtra("notesData");
+                displayGist();
+            }
+        }
+    }
+
+    public void displayGist() {
+        if (notesData.length() < 50) {
+            notesGist.setText(notesData);
+        }
+        else {
+            notesGist.setText(notesData.substring(1, 50) + "...");
+        }
     }
 }
