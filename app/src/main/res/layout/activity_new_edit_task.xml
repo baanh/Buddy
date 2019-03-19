@@ -44,7 +44,7 @@
         android:id="@+id/notesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_task_description">
         <Button
@@ -61,7 +61,7 @@
 
         <EditText
             android:id="@+id/notesGist"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="Notes Gist"
             android:focusable="false"
