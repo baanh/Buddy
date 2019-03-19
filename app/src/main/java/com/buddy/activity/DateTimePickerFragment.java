@@ -63,13 +63,13 @@ public class DateTimePickerFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setTitle("Select date time")
+                .setTitle("Select Date & Time")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getContext(),"Fuck you", Toast.LENGTH_SHORT).show();
                         TextView startTime = (TextView) getActivity().findViewById(R.id.textview_start_time);
                         startTime.setText(month + "/" + dayOfMonth + "/" + year + " " + hour + ":" + minute);
+
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

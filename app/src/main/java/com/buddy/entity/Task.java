@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "task", foreignKeys = @ForeignKey(entity = Category.class,
@@ -26,6 +28,9 @@ public class Task {
 
     @ColumnInfo(name = "categoryId")
     private int categoryId;
+
+    @ColumnInfo(name = "loggedTime")
+    private String timeLog;
 
     public Task(@NonNull String name, String description) {
         this.name = name;
@@ -70,5 +75,13 @@ public class Task {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getTimeLog() {
+        return timeLog;
+    }
+
+    public void setTimeLog(String timeLog) {
+        this.timeLog = timeLog;
     }
 }

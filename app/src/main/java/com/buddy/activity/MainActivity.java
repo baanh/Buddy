@@ -1,5 +1,6 @@
 package com.buddy.activity;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,9 +9,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -140,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             }
             task.setCategoryId(categoryId);
             task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+            task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
 
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
@@ -161,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             }
             task.setCategoryId(categoryId);
             task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+            task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
 
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
@@ -191,13 +200,17 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID);
+        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.icons8task64)).getBitmap();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID)
+                .setLargeIcon(bitmap)
+                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(contentIntent);
-
-        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        mBuilder
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_notifications_custom);
 
         LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
 

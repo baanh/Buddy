@@ -18,6 +18,10 @@ import android.widget.Toast;
 import com.buddy.entity.Category;
 import com.buddy.main.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class TaskNewEditActivity extends AppCompatActivity
         implements CategorySelectionFragment.CategorySelectionDialogListener {
 
@@ -30,14 +34,19 @@ public class TaskNewEditActivity extends AppCompatActivity
     private Category selectedCategory;
     private Button notesButton;
     private EditText notesGist;
+    private Button logStart, logEnd;
+    private EditText loggedTime;
 
     private String notesData = "";
+    private Date timeLogged;
+    private String timeLog = "00:00:00.000";
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
     public static final String EXTRA_DESC = "com.buddy.tasklistsql.EXTRA_DESC";
     public static final String EXTRA_CATEGORY_ID = "com.buddy.tasklistsql.EXTRA_CATEGORY_ID";
     public static final String EXTRA_NOTES = "com.buddy.tasklistsql.EXTRA_NOTES";
+    public static final String EXTRA_TIME_LOG = "com.buddy.tasklistsql.EXTRA_TIME_LOG";
 
     public static final String EXTRA_REPLY_NAME = "com.buddy.tasklistsql.REPLY_NAME";
     public static final String EXTRA_REPLY_DESC = "com.buddy.tasklistsql.REPLY_DESC";
@@ -51,6 +60,9 @@ public class TaskNewEditActivity extends AppCompatActivity
         editTaskDescription = (EditText) findViewById(R.id.edit_task_description);
         notesButton = findViewById(R.id.notesButton);
         notesGist = findViewById(R.id.notesGist);
+        logEnd = findViewById(R.id.logEnd);
+        logStart = findViewById(R.id.logStart);
+        loggedTime = findViewById(R.id.loggedTime);
 
         Intent intent = getIntent();
 
@@ -59,9 +71,12 @@ public class TaskNewEditActivity extends AppCompatActivity
             editTaskName.setText(intent.getStringExtra(EXTRA_NAME));
             editTaskDescription.setText(intent.getStringExtra(EXTRA_DESC));
             notesData = intent.getStringExtra(EXTRA_NOTES);
+            timeLog = intent.getStringExtra(EXTRA_TIME_LOG);
+            loggedTime.setText(timeLog);
             displayGist();
         } else {
             setTitle("New Task");
+            loggedTime.setText(timeLog);
             displayGist();
         }
 
@@ -114,6 +129,7 @@ public class TaskNewEditActivity extends AppCompatActivity
         response.putExtra(EXTRA_REPLY_NAME, name);
         response.putExtra(EXTRA_REPLY_DESC, description);
         response.putExtra(EXTRA_CATEGORY_ID, categoryId);
+        response.putExtra(EXTRA_TIME_LOG, timeLog);
         response.putExtra(EXTRA_NOTES, notesData);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
@@ -148,11 +164,29 @@ public class TaskNewEditActivity extends AppCompatActivity
     }
 
     public void displayGist() {
-        if (notesData.length() < 50) {
+        if (notesData.length() < 20) {
             notesGist.setText(notesData);
         }
         else {
-            notesGist.setText(notesData.substring(1, 50) + "...");
+            notesGist.setText(notesData.substring(1, 20) + "...");
         }
+    }
+
+    public void timeLogStart(View view) {
+        logStart.setEnabled(false);
+        logEnd.setEnabled(true);
+        timeLogged = Calendar.getInstance().getTime();
+    }
+
+    public void timeLogEnd(View view) {
+        logStart.setEnabled(true);
+        logEnd.setEnabled(false);
+        long timeDifferenceMiliSec = Calendar.getInstance().getTime().getTime() - timeLogged.getTime();
+        int hours = (int) timeDifferenceMiliSec / (1000 * 60 * 60);
+        int mins = (int) (timeDifferenceMiliSec / (1000 * 60)) % 60;
+        int secs = (int) (timeDifferenceMiliSec / 1000) % 60;
+        int milis = (int) timeDifferenceMiliSec % 1000;
+        timeLog = String.format("%02d:%02d:%02d.%03d", hours, mins, secs, milis);
+        loggedTime.setText(timeLog);
     }
 }
