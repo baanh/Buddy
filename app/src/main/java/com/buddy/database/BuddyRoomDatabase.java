@@ -14,7 +14,7 @@ import com.buddy.dao.TaskDao;
 import com.buddy.entity.Category;
 import com.buddy.entity.Task;
 
-@Database(entities = {Task.class, Category.class}, version = 2)
+@Database(entities = {Task.class, Category.class}, version = 3)
 public abstract class BuddyRoomDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
     public abstract CategoryDao categoryDao();

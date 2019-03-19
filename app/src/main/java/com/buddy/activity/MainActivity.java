@@ -128,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
-            Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
-                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
+            Task task = new Task(
+                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
+                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC)
+            );
 
             int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
             if (categoryId == -1) {
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 return;
             }
             task.setCategoryId(categoryId);
+            task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
 
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
@@ -151,6 +154,14 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
                     data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
             task.setId(id);
+            int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+            if (categoryId == -1) {
+                Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
+                return;
+            }
+            task.setCategoryId(categoryId);
+            task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
@@ -164,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
         intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
         intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
+        intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
     }
 
@@ -195,6 +207,5 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                     .setContentText(taskList.getValue().get(i).getDescription());
             notificationManager.notify(i, mBuilder.build());
         }
-
     }
 }
