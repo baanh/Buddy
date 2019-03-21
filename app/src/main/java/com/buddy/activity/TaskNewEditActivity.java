@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,6 +26,7 @@ import java.util.Date;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
+    private static final String TAG = "Notes: ";
     private EditText editTaskName;
     private EditText editTaskDescription;
     private TextView textStartTime;
@@ -34,6 +37,10 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private LinearLayout categorySelect;
     private DateTimePickerFragment dateTimePickerFragment;
     private CategorySelectionFragment categorySelectionFragment;
+    private Button notesButton;
+    private EditText notesGist;
+
+    private String notesData = "";
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
@@ -41,6 +48,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     public static final String EXTRA_CATEGORY_ID = "com.buddy.tasklistsql.EXTRA_CATEGORY_ID";
     public static final String EXTRA_START_DATE = "com.buddy.tasklistsql.EXTRA_START_DATE";
     public static final String EXTRA_END_DATE = "com.buddy.tasklistsql.EXTRA_END_DATE";
+    public static final String EXTRA_NOTES = "com.buddy.tasklistsql.EXTRA_NOTES";
 
     public static final String EXTRA_REPLY_NAME = "com.buddy.tasklistsql.REPLY_NAME";
     public static final String EXTRA_REPLY_DESC = "com.buddy.tasklistsql.REPLY_DESC";
@@ -62,7 +70,8 @@ public class TaskNewEditActivity extends AppCompatActivity {
         textEndTime = findViewById(R.id.textview_end_time);
         categorySelect = findViewById(R.id.category_select_view);
         textCategory = categorySelect.findViewById(R.id.textView_category);
-
+        notesButton = findViewById(R.id.notesButton);
+        notesGist = findViewById(R.id.notesGist);
         setNewEditEnvironment();
 
         // Select start time and end time, use Bundle to pass data to dialog object
@@ -157,6 +166,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         response.putExtra(EXTRA_CATEGORY_ID, categoryId);
         response.putExtra(EXTRA_REPLY_START_DATE, startDate.getTime());
         response.putExtra(EXTRA_REPLY_END_DATE, endDate.getTime());
+        response.putExtra(EXTRA_NOTES, notesData);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -165,5 +175,31 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
         setResult(RESULT_OK, response);
         finish();
+    }
+
+    public void openNotes(View view) {
+        Intent intent = new Intent(TaskNewEditActivity.this, NotesActivity.class    );
+        intent.putExtra(EXTRA_NOTES, notesData);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                notesData = data.getStringExtra("notesData");
+                displayGist();
+            }
+        }
+    }
+
+    public void displayGist() {
+        if (notesData.length() < 50) {
+            notesGist.setText(notesData);
+        }
+        else {
+            notesGist.setText(notesData.substring(1, 50) + "...");
+        }
     }
 }
