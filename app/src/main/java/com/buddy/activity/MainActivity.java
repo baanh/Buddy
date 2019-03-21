@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, task.getCategoryId());
         intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
         intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
+        intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
     }
 
@@ -150,15 +151,14 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         Task task = new Task();
         task.setCategoryId(categoryId);
 
-        String name = data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME);
-        String description = data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC);
         Date startDate = new Date();
         startDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_START_DATE,-1));
         Date endDate = new Date();
         endDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_END_DATE,-1));
 
-        task.setName(name);
-        task.setDescription(description);
+        task.setName(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME));
+        task.setDescription(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
+        task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
         task.setStartDate(startDate);
         task.setEndDate(endDate);
         return task;

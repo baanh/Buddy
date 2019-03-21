@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,7 +24,6 @@ import java.util.Date;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
-    private static final String TAG = "Notes: ";
     private EditText editTaskName;
     private EditText editTaskDescription;
     private TextView textStartTime;
@@ -39,8 +36,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private CategorySelectionFragment categorySelectionFragment;
     private Button notesButton;
     private EditText notesGist;
-
-    private String notesData = "";
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
     public static final String EXTRA_NAME = "com.buddy.tasklistsql.EXTRA_NAME";
@@ -58,6 +53,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private Date startDate;
     private Date endDate;
     private Category category;
+    private String notesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +116,8 @@ public class TaskNewEditActivity extends AppCompatActivity {
         setTitle("Edit Task");
         editTaskName.setText(intent.getStringExtra(EXTRA_NAME));
         editTaskDescription.setText(intent.getStringExtra(EXTRA_DESC));
+        notesData = intent.getStringExtra(EXTRA_NOTES) != null ? intent.getStringExtra(EXTRA_NOTES) : "";
+        showShortNotes(notesData);
         startDate = new Date(intent.getLongExtra(EXTRA_START_DATE, -1));
         endDate = new Date(intent.getLongExtra(EXTRA_END_DATE, -1));
         Calendar cal = Calendar.getInstance();
@@ -189,17 +187,17 @@ public class TaskNewEditActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 notesData = data.getStringExtra("notesData");
-                displayGist();
+                showShortNotes(notesData);
             }
         }
     }
 
-    public void displayGist() {
-        if (notesData.length() < 50) {
-            notesGist.setText(notesData);
+    public void showShortNotes(String note) {
+        if (note.length() < 50) {
+            notesGist.setText(note);
         }
         else {
-            notesGist.setText(notesData.substring(1, 50) + "...");
+            notesGist.setText(note.substring(1, 50) + "...");
         }
     }
 }
