@@ -4,6 +4,7 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.buddy.entity.Category;
 import com.buddy.entity.Task;
 
 @Database(entities = {Task.class, Category.class}, version = 3)
+@TypeConverters({Converters.class})
 public abstract class BuddyRoomDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
     public abstract CategoryDao categoryDao();
@@ -58,11 +60,7 @@ public abstract class BuddyRoomDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Category category = new Category("Work");
-            categoryDao.insert(category);
-            Task task = new Task("Task 1", "Description 1");
-            task.setCategoryId(categoryDao.getAllCategories().getValue().get(0).getId());
-            taskDao.insert(new Task("Task 1", "Description 1"));
+            // TODO Insert initial data into database
             return null;
         }
     }
