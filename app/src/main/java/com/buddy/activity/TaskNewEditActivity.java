@@ -34,6 +34,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private LinearLayout categorySelect;
     private DateTimePickerFragment dateTimePickerFragment;
     private CategorySelectionFragment categorySelectionFragment;
+    private Button notesButton;
     private EditText notesGist;
 
     public static final String EXTRA_ID = "com.buddy.tasklistsql.EXTRA_ID";
@@ -65,6 +66,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         textEndTime = findViewById(R.id.textview_end_time);
         categorySelect = findViewById(R.id.category_select_view);
         textCategory = categorySelect.findViewById(R.id.textView_category);
+        notesButton = findViewById(R.id.notesButton);
         notesGist = findViewById(R.id.notesGist);
         setNewEditEnvironment();
 
