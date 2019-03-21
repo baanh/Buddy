@@ -27,6 +27,7 @@ import com.buddy.entity.Task;
 import com.buddy.main.R;
 import com.buddy.viewmodel.TaskViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         setContentView(R.layout.activity_main);
 
         // Get recycleView to populate a list of tasks
-        mTaskListRecycleView = (RecyclerView) findViewById(R.id.my_task_list);
+        mTaskListRecycleView = findViewById(R.id.my_task_list);
 
         // use a LinearLayout Manager
         RecyclerView.LayoutManager mTaskListLayoutManager = new LinearLayoutManager(this);
@@ -116,55 +117,74 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     }
 
     /*
-    * This function is revoked when user click Add or Edit a Task
-    * */
+     * This function is revoked when user click Add a new Task
+     */
     public void newEditTask(MenuItem view) {
         Intent newTaskIntent = new Intent(this, TaskNewEditActivity.class);
         startActivityForResult(newTaskIntent, NEW_TASK_REQUEST);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
-            Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
-                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
-
-            int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
-            if (categoryId == -1) {
-                Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
-                return;
-            }
-            task.setCategoryId(categoryId);
-
-            mTaskViewModel.insert(task);
-            Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
-        } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
-
-            if (id == -1) {
-                Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Task task = new Task(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME),
-                    data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
-            task.setId(id);
-            mTaskViewModel.update(task);
-            Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Not Saved", Toast.LENGTH_LONG).show();
-        }
-    }
-
+    /*
+     * This method called to edit clicked task
+     */
     @Override
     public void onItemClick(Task task) {
         Intent intent = new Intent(this, TaskNewEditActivity.class);
         intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
         intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
         intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
+        intent.putExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, task.getCategoryId());
+        intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
+        intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
+    }
+
+    public Task createTaskFromIntent(Intent data) {
+        // Check if user has chosen category
+        int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+        if (categoryId == -1) {
+            Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        // Get data from the response activity
+        Task task = new Task();
+        task.setCategoryId(categoryId);
+
+        String name = data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME);
+        String description = data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC);
+        Date startDate = new Date();
+        startDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_START_DATE,-1));
+        Date endDate = new Date();
+        endDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_END_DATE,-1));
+
+        task.setName(name);
+        task.setDescription(description);
+        task.setStartDate(startDate);
+        task.setEndDate(endDate);
+        return task;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
+            Task task = createTaskFromIntent(data);
+            mTaskViewModel.insert(task);
+            Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
+        } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+            // Check if task has been created and assigned a category
+            int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
+            if (id == -1) {
+                Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
+                return;
+            }
+            Task task = createTaskFromIntent(data);
+            task.setId(id);
+            mTaskViewModel.update(task);
+            Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Not Saved", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void pushNotifications() {

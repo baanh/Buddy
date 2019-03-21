@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="Tue 08, 2012" />
+            android:text="Select time" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -111,12 +111,12 @@
             android:text="End" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/textview_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="Tue 08, 2012" />
+            android:text="Select time" />
     </RelativeLayout>
 
     <EditText
@@ -159,7 +159,7 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_task_description" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textView_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select category"
