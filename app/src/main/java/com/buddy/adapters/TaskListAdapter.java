@@ -50,8 +50,8 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
 
         public TaskViewHolder(View view) {
             super(view);
-            taskName = (TextView) view.findViewById(R.id.task_name);
-            taskDescription = (TextView) view.findViewById(R.id.task_description);
+            taskName = view.findViewById(R.id.task_name);
+            taskDescription = view.findViewById(R.id.task_description);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

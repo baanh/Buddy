@@ -15,40 +15,36 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.buddy.adapters.CategoryListAdapter;
 import com.buddy.entity.Category;
 import com.buddy.main.R;
 import com.buddy.viewmodel.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategorySelectionFragment extends DialogFragment {
-    private RecyclerView recycleView;
     private CategoryViewModel categoryViewModel;
     private Button btnNewCategory;
-    private CategorySelectionDialogListener listener;
+    private Category selectCategory = null;
+    private List<Category> allCategories;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Get view
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_category_selection, null);
-
-        recycleView = (RecyclerView) view.findViewById(R.id.category_list);
-        final CategoryListAdapter mAdapter = new CategoryListAdapter(getActivity());
-        recycleView.setAdapter(mAdapter);
-        recycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
-        categoryViewModel.getAllCategories().observe(this, new Observer<List<Category>>() {
-            @Override
-            public void onChanged(@Nullable final List<Category> categories) {
-                mAdapter.setCategoryList(categories);
-            }
-        });
+        allCategories = categoryViewModel.getAllCategories();
+        List<String> categoryNames = new ArrayList<>();
+        // Get names of categories
+        for (Category cat : allCategories) {
+            categoryNames.add(cat.getName());
+        }
 
-        btnNewCategory = (Button) view.findViewById(R.id.btn_new_category);
+        btnNewCategory = view.findViewById(R.id.btn_new_category);
         btnNewCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,30 +53,35 @@ public class CategorySelectionFragment extends DialogFragment {
             }
         });
 
-        // return a dialog object
-        return new AlertDialog.Builder(getActivity())
-                .setView(view)
-                .setTitle("Select Category")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.setSelectedCategory(mAdapter.getSelectedItem());
-                    }
-                })
-                .create();
+        // Build a dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Select Category");
+        builder.setSingleChoiceItems(categoryNames.toArray(new String[0]), -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                setSelectCategory(allCategories.get(which));
+            }
+        });
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO User select a category and confirm
+                TextView txtCategory = getActivity().findViewById(R.id.textView_category);
+                txtCategory.setText(selectCategory.getName());
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO User cancelled the dialog
+            }
+        });
+
+        return builder.create();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            listener = (CategorySelectionDialogListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "Must implement Category Selection Listener");
-        }
+    public Category getSelectCategory() {
+        return selectCategory;
     }
 
-    public interface CategorySelectionDialogListener {
-        void setSelectedCategory(Category selectedCategory);
+    public void setSelectCategory(Category selectCategory) {
+        this.selectCategory = selectCategory;
     }
 }

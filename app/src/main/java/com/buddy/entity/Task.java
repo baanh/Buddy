@@ -3,6 +3,7 @@ package com.buddy.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -31,6 +32,15 @@ public class Task {
 
     @ColumnInfo(name = "loggedTime")
     private String timeLog;
+
+    @ColumnInfo(name = "startDate")
+    private Date startDate;
+
+    @ColumnInfo(name = "endDate")
+    private Date endDate;
+
+    @Ignore
+    public Task() { }
 
     public Task(@NonNull String name, String description) {
         this.name = name;
@@ -83,5 +93,21 @@ public class Task {
 
     public void setTimeLog(String timeLog) {
         this.timeLog = timeLog;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

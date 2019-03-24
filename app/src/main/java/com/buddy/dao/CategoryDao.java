@@ -6,8 +6,6 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
-
-import com.buddy.entity.Task;
 import com.buddy.entity.Category;
 
 import java.util.List;
@@ -28,8 +26,8 @@ public interface CategoryDao {
     void deleteAll();
 
     @Query("SELECT * FROM Category")
-    LiveData<List<Category>> getAllCategories();
+    List<Category> getAllCategories();
 
-    @Query("SELECT * FROM task WHERE id == :taskCategoryId")
-    Task findCategoryById(String taskCategoryId);
+    @Query("SELECT * FROM Category WHERE id == :categoryId")
+    Category findCategoryById(int categoryId);
 }

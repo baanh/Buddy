@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CategoryViewModel extends AndroidViewModel {
     private CategoryRepository categoryRepository;
-    private LiveData<List<Category>> allCategories;
+    private List<Category> allCategories;
 
     public CategoryViewModel(@NonNull Application application) {
         super(application);
@@ -20,9 +20,10 @@ public class CategoryViewModel extends AndroidViewModel {
         allCategories = categoryRepository.getAllCategories();
     }
 
-    public LiveData<List<Category>> getAllCategories() { return allCategories; }
+    public List<Category> getAllCategories() { return allCategories; }
     public void insert(Category category) { categoryRepository.insert(category); }
     public void update(Category category) { categoryRepository.update(category); }
     public void delete(Category category) { categoryRepository.delete(category); }
     public void deleteAll() { categoryRepository.deleteAllCategories(); }
+    public Category findCategoryById(int categoryId) { return categoryRepository.findCategoryById(categoryId); }
 }
