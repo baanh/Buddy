@@ -41,18 +41,18 @@ public class Dialer extends AppCompatActivity {
 
         tv_number = (TextView) findViewById(R.id.tv_number);
 
-        button_dial_1 = (Button) findViewById(R.id.b_1);
-        button_dial_2 = (Button) findViewById(R.id.b_2);
-        button_dial_3 = (Button) findViewById(R.id.b_3);
-        button_dial_4 = (Button) findViewById(R.id.b_4);
-        button_dial_5 = (Button) findViewById(R.id.b_5);
-        button_dial_6 = (Button) findViewById(R.id.b_6);
-        button_dial_7 = (Button) findViewById(R.id.b_7);
-        button_dial_8 = (Button) findViewById(R.id.b_8);
-        button_dial_9 = (Button) findViewById(R.id.b_9);
-        button_dial_0 = (Button) findViewById(R.id.b_0);
-        button_dial_clear = (Button) findViewById(R.id.b_clear);
-        button_dial_call = (Button) findViewById(R.id.b_call);
+        button_dial_1 = (Button) findViewById(R.id.button_dial_1);
+        button_dial_2 = (Button) findViewById(R.id.button_dial_2);
+        button_dial_3 = (Button) findViewById(R.id.button_dial_3);
+        button_dial_4 = (Button) findViewById(R.id.button_dial_4);
+        button_dial_5 = (Button) findViewById(R.id.button_dial_5);
+        button_dial_6 = (Button) findViewById(R.id.button_dial_6);
+        button_dial_7 = (Button) findViewById(R.id.button_dial_7);
+        button_dial_8 = (Button) findViewById(R.id.button_dial_8);
+        button_dial_9 = (Button) findViewById(R.id.button_dial_9);
+        button_dial_0 = (Button) findViewById(R.id.button_dial_0);
+        button_dial_clear = (Button) findViewById(R.id.button_dial_clear);
+        button_dial_call = (Button) findViewById(R.id.button_dial_call);
 
         button_dial_1.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -26,6 +26,7 @@
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
         <activity android:name="com.buddy.activity.NotesActivity"/>
         <activity android:name="com.buddy.util.Contact" />
+        <activity android:name="com.buddy.util.Dialer" />
     </application>
 
 </manifest>
