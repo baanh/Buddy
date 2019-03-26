@@ -199,6 +199,10 @@ public class TaskNewEditActivity extends AppCompatActivity {
         finish();
     }
 
+    public void closeTask(MenuItem view) {
+        finish();
+    }
+
     public void openNotes(View view) {
         Intent intent = new Intent(TaskNewEditActivity.this, NotesActivity.class    );
         intent.putExtra(EXTRA_NOTES, notesData);

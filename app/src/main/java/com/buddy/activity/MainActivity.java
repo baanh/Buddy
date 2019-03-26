@@ -103,21 +103,29 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.push_notifications:
                 pushNotifications();
                 return true;
+
             case R.id.action_favorite:
                 return true;
+
             case R.id.action_settings:
                 return true;
+
             case R.id.action_delete_all_tasks:
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
+
             case R.id.action_new_category:
                 Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
                 startActivity(newCategoryIntent);
                 return true;
+
+            case R.id.action_exit:
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -203,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Not Saved", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Task not Saved", Toast.LENGTH_LONG).show();
         }
     }
 
