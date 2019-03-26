@@ -206,16 +206,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         }
     }
 
-    @Override
-    public void onItemClick(Task task) {
-        Intent intent = new Intent(this, TaskNewEditActivity.class);
-        intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
-        intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
-        startActivityForResult(intent, EDIT_TASK_REQUEST);
-    }
-
     public void pushNotifications() {
         String channelID = "001";
         CharSequence channelName = "First Channel";

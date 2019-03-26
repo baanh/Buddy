@@ -65,7 +65,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private Date startDate;
     private Date endDate;
     private Category category;
-    private String notesData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,27 +86,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
         logStart = findViewById(R.id.logStart);
         loggedTime = findViewById(R.id.loggedTime);
 
-        Intent intent = getIntent();
-
-        if (intent.hasExtra(EXTRA_ID)) {
-            setTitle("Edit Task");
-            editTaskName.setText(intent.getStringExtra(EXTRA_NAME));
-            editTaskDescription.setText(intent.getStringExtra(EXTRA_DESC));
-            notesData = intent.getStringExtra(EXTRA_NOTES);
-            timeLog = intent.getStringExtra(EXTRA_TIME_LOG);
-            loggedTime.setText(timeLog);
-            displayGist();
-        } else {
-            setTitle("New Task");
-            loggedTime.setText(timeLog);
-            displayGist();
-        }
-
-        startTime = (RelativeLayout) findViewById(R.id.start_time_view);
-        endTime = (RelativeLayout) findViewById(R.id.end_time_view);
-
-        startTime.setOnClickListener(new View.OnClickListener() {
-        // Select start time and end time, use Bundle to pass data to dialog object
         final Bundle args = new Bundle();
         dateTimePickerFragment = new DateTimePickerFragment();
         dateTimePickerFragment.setStartTime(startDate);
@@ -231,37 +209,11 @@ public class TaskNewEditActivity extends AppCompatActivity {
     }
 
     public void showShortNotes(String note) {
-        if (note.length() < 50) {
+        if (note.length() < 20) {
             notesGist.setText(note);
         }
         else {
-            notesGist.setText(note.substring(1, 50) + "...");
-        }
-    }
-
-    public void openNotes(View view) {
-        Intent intent = new Intent(TaskNewEditActivity.this, NotesActivity.class    );
-        intent.putExtra(EXTRA_NOTES, notesData);
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                notesData = data.getStringExtra("notesData");
-                displayGist();
-            }
-        }
-    }
-
-    public void displayGist() {
-        if (notesData.length() < 20) {
-            notesGist.setText(notesData);
-        }
-        else {
-            notesGist.setText(notesData.substring(1, 20) + "...");
+            notesGist.setText(note.substring(1, 20) + "...");
         }
     }
 
