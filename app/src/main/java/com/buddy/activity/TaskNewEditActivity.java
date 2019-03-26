@@ -2,7 +2,9 @@ package com.buddy.activity;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -200,7 +202,24 @@ public class TaskNewEditActivity extends AppCompatActivity {
     }
 
     public void closeTask(MenuItem view) {
-        finish();
+        AlertDialog closingDialog = new AlertDialog.Builder(this).create();
+        closingDialog.setTitle("Task not saved");
+        closingDialog.setMessage("The current task is not saved. Are you sure you want to exit?");
+        closingDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+        closingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    }
+                });
+        closingDialog.show();
     }
 
     public void openNotes(View view) {
