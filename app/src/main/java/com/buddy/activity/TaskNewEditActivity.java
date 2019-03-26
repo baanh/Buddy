@@ -44,7 +44,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
     private String notesData = "";
     private Date timeLogged;
-    private String timeLog = "00:00:00.000";
+    private String timeLog = "00:00";
     private DateTimePickerFragment dateTimePickerFragment;
     private CategorySelectionFragment categorySelectionFragment;
 
@@ -79,7 +79,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
         textCategory = categorySelect.findViewById(R.id.textView_category);
         notesButton = findViewById(R.id.notesButton);
         notesGist = findViewById(R.id.notesGist);
-        setNewEditEnvironment();
         editTaskName = (EditText) findViewById(R.id.edit_task_name);
         editTaskDescription = (EditText) findViewById(R.id.edit_task_description);
         logEnd = findViewById(R.id.logEnd);
@@ -118,6 +117,8 @@ public class TaskNewEditActivity extends AppCompatActivity {
                 categorySelectionFragment.show(getSupportFragmentManager(), "categorySelection");
             }
         });
+
+        setNewEditEnvironment();
     }
 
     @SuppressLint("SetTextI18n")
@@ -126,13 +127,16 @@ public class TaskNewEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (!intent.hasExtra(EXTRA_ID)) {
             setTitle("New Task");
+            loggedTime.setText(timeLog);
             return;
         }
         setTitle("Edit Task");
+
         editTaskName.setText(intent.getStringExtra(EXTRA_NAME));
         editTaskDescription.setText(intent.getStringExtra(EXTRA_DESC));
         notesData = intent.getStringExtra(EXTRA_NOTES) != null ? intent.getStringExtra(EXTRA_NOTES) : "";
         showShortNotes(notesData);
+
         startDate = new Date(intent.getLongExtra(EXTRA_START_DATE, -1));
         endDate = new Date(intent.getLongExtra(EXTRA_END_DATE, -1));
         Calendar cal = Calendar.getInstance();
@@ -142,10 +146,14 @@ public class TaskNewEditActivity extends AppCompatActivity {
         cal.setTime(endDate);
         textEndTime.setText(cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.DAY_OF_MONTH)
                 + "/" + cal.get(Calendar.YEAR) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+
         int categoryId = intent.getIntExtra(EXTRA_CATEGORY_ID, -1);
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         category = categoryViewModel.findCategoryById(categoryId);
         textCategory.setText(category.getName());
+
+        timeLog = intent.getStringExtra(EXTRA_TIME_LOG);
+        loggedTime.setText(timeLog);
     }
 
     @Override
@@ -217,21 +225,21 @@ public class TaskNewEditActivity extends AppCompatActivity {
         }
     }
 
+    //Function to start the time log
     public void timeLogStart(View view) {
         logStart.setEnabled(false);
         logEnd.setEnabled(true);
         timeLogged = Calendar.getInstance().getTime();
     }
 
+    //Function to stop and save the time log
     public void timeLogEnd(View view) {
         logStart.setEnabled(true);
         logEnd.setEnabled(false);
         long timeDifferenceMiliSec = Calendar.getInstance().getTime().getTime() - timeLogged.getTime();
         int hours = (int) timeDifferenceMiliSec / (1000 * 60 * 60);
         int mins = (int) (timeDifferenceMiliSec / (1000 * 60)) % 60;
-        int secs = (int) (timeDifferenceMiliSec / 1000) % 60;
-        int milis = (int) timeDifferenceMiliSec % 1000;
-        timeLog = String.format("%02d:%02d:%02d.%03d", hours, mins, secs, milis);
+        timeLog = String.format("%02d:%02d", hours, mins);
         loggedTime.setText(timeLog);
     }
 }

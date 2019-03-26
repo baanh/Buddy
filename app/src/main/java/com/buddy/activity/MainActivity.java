@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
         intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
         intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
+        intent.putExtra(TaskNewEditActivity.EXTRA_TIME_LOG, task.getTimeLog());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
     }
 
