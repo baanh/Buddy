@@ -41,10 +41,11 @@ public class DateTimePickerFragment extends DialogFragment {
         setTimeForDialog(calendar, args);
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_datetime, null);
         DatePicker datePicker = v.findViewById(R.id.datePicker);
-        datePicker.init(year, month - 1, dayOfMonth, new DatePicker.OnDateChangedListener() {
+        datePicker.init(year, month, dayOfMonth, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 DateTimePickerFragment.this.year = year;
+                // month of date picker starts from 0
                 DateTimePickerFragment.this.month = monthOfYear + 1;
                 DateTimePickerFragment.this.dayOfMonth = dayOfMonth;
             }

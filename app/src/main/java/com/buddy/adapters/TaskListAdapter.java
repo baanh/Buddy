@@ -12,6 +12,8 @@ import com.buddy.main.R;
 
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 /*
  * List Adapter for Task List RecycleView extends ListAdapter to deal with large dataset
  * Plus the use of DiffUtil class to add animations when user interacts with the list
@@ -44,14 +46,16 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         return getItem(position);
     }
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder {
+    class TaskViewHolder extends RecyclerView.ViewHolder {
         private TextView taskName;
         private TextView taskDescription;
+        private TextView taskSchedule;
 
-        public TaskViewHolder(View view) {
+        TaskViewHolder(View view) {
             super(view);
             taskName = view.findViewById(R.id.task_name);
             taskDescription = view.findViewById(R.id.task_description);
+            taskSchedule = view.findViewById(R.id.task_schedule);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -69,6 +73,7 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         void onItemClick(Task task);
     }
 
+    @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -81,6 +86,11 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         Task task = getItem(position);
         viewHolder.taskName.setText(task.getName());
         viewHolder.taskDescription.setText(task.getDescription());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(task.getStartDate());
+        viewHolder.taskSchedule.setText(cal.get(Calendar.MONTH) + "/"
+                + cal.get(Calendar.DAY_OF_MONTH) + "/"
+                + cal.get(Calendar.YEAR));
     }
 }
 

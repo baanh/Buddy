@@ -29,4 +29,9 @@
         android:title="Delete all tasks"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/monthly_view"
+        android:title="Monthly View"
+        app:showAsAction="never"/>
+
 </menu>

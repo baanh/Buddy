@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import com.buddy.entity.Task;
 import com.buddy.repository.TaskRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
@@ -28,4 +29,6 @@ public class TaskViewModel extends AndroidViewModel {
     public void delete(Task task) { taskRepository.delete(task); }
 
     public void deleteAllTasks() { taskRepository.deleteAllTasks(); }
+
+    public List<Task> findTasksBetweenDate(Date from, Date to) { return taskRepository.findTasksBetweenDate(from, to); }
 }

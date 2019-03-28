@@ -31,11 +31,10 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
-    private RecyclerView mTaskListRecycleView;
     private TaskViewModel mTaskViewModel;
 
-    private static final int NEW_TASK_REQUEST = 1;
-    private static final int EDIT_TASK_REQUEST = 2;
+    public static final int NEW_TASK_REQUEST = 1;
+    public static final int EDIT_TASK_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         setContentView(R.layout.activity_main);
 
         // Get recycleView to populate a list of tasks
-        mTaskListRecycleView = findViewById(R.id.my_task_list);
+        RecyclerView mTaskListRecycleView = findViewById(R.id.my_task_list);
 
         // use a LinearLayout Manager
         RecyclerView.LayoutManager mTaskListLayoutManager = new LinearLayoutManager(this);
@@ -110,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             case R.id.action_new_category:
                 Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
                 startActivity(newCategoryIntent);
+                return true;
+            case R.id.monthly_view:
+                Intent intent = new Intent(this, TaskMonthlyViewActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

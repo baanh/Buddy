@@ -8,7 +8,9 @@ import com.buddy.dao.TaskDao;
 import com.buddy.database.BuddyRoomDatabase;
 import com.buddy.entity.Task;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class TaskRepository {
     private TaskDao taskDao;
@@ -17,7 +19,7 @@ public class TaskRepository {
     public TaskRepository(Application application) {
         BuddyRoomDatabase db = BuddyRoomDatabase.getDatabase(application);
         taskDao = db.taskDao();
-        allTasks = taskDao.getAllTask();
+        allTasks = taskDao.getAllTasks();
     }
 
     public LiveData<List<Task>> getAllTasks() {
@@ -38,6 +40,29 @@ public class TaskRepository {
 
     public void deleteAllTasks() {
         new DeleteAllTasksAsyncTask(taskDao).execute();
+    }
+
+    public List<Task> findTasksBetweenDate(Date from, Date to) {
+        List<Task> tasks = null;
+        try {
+            tasks = new FindTasksBetweenDateAsyncTask(taskDao).execute(from, to).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return tasks;
+    }
+
+    private static class FindTasksBetweenDateAsyncTask extends AsyncTask<Date, Void, List<Task>> {
+        private TaskDao taskDao;
+
+        FindTasksBetweenDateAsyncTask(TaskDao dao) { taskDao = dao; }
+
+        @Override
+        protected List<Task> doInBackground(Date... dates) {
+            return taskDao.findTasksBetweenDate(dates[0], dates[1]);
+        }
     }
 
     private static class InsertAsyncTask extends AsyncTask<Task, Void, Void> {

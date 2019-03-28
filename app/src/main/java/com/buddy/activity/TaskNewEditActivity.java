@@ -29,9 +29,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private TextView textStartTime;
     private TextView textEndTime;
     private TextView textCategory;
-    private RelativeLayout startTimeView;
-    private RelativeLayout endTimeView;
-    private LinearLayout categorySelect;
     private DateTimePickerFragment dateTimePickerFragment;
     private CategorySelectionFragment categorySelectionFragment;
     private EditText notesGist;
@@ -63,7 +60,15 @@ public class TaskNewEditActivity extends AppCompatActivity {
         editTaskDescription = findViewById(R.id.edit_task_description);
         textStartTime = findViewById(R.id.textview_start_time);
         textEndTime = findViewById(R.id.textview_end_time);
-        categorySelect = findViewById(R.id.category_select_view);
+        TextView txtViewMap = findViewById(R.id.txt_view_map);
+        txtViewMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+        LinearLayout categorySelect = findViewById(R.id.category_select_view);
         textCategory = categorySelect.findViewById(R.id.textView_category);
         notesGist = findViewById(R.id.notesGist);
         setNewEditEnvironment();
@@ -73,7 +78,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         dateTimePickerFragment = new DateTimePickerFragment();
         dateTimePickerFragment.setStartTime(startDate);
         dateTimePickerFragment.setEndTime(endDate);
-        startTimeView = findViewById(R.id.start_time_view);
+        RelativeLayout startTimeView = findViewById(R.id.start_time_view);
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +87,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
                 dateTimePickerFragment.show(getSupportFragmentManager(), "startTimePicker");
             }
         });
-        endTimeView = findViewById(R.id.end_time_view);
+        RelativeLayout endTimeView = findViewById(R.id.end_time_view);
         endTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

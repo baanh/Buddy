@@ -14,15 +14,14 @@ import com.buddy.viewmodel.CategoryViewModel;
 public class CategoryNewEditActivity extends AppCompatActivity {
     private CategoryViewModel categoryViewModel;
     private EditText categoryName;
-    private Button btnSaveCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_new_edit);
 
-        categoryName = (EditText) findViewById(R.id.edit_category_name);
-        btnSaveCategory = (Button) findViewById(R.id.btn_save_category);
+        categoryName = findViewById(R.id.edit_category_name);
+        Button btnSaveCategory = findViewById(R.id.btn_save_category);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
         btnSaveCategory.setOnClickListener(new View.OnClickListener() {
