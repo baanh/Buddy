@@ -274,4 +274,15 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/edit_location"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/getPeople"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="30dp"
+        android:text="Check Invited People"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
