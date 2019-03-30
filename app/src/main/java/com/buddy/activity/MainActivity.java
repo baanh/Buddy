@@ -1,5 +1,6 @@
 package com.buddy.activity;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,9 +9,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -96,21 +103,29 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.push_notifications:
                 pushNotifications();
                 return true;
+
             case R.id.action_favorite:
                 return true;
+
             case R.id.action_settings:
                 return true;
+
             case R.id.action_delete_all_tasks:
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
+
             case R.id.action_new_category:
                 Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
                 startActivity(newCategoryIntent);
                 return true;
+
+            case R.id.action_exit:
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -137,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
         intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
         intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
+        intent.putExtra(TaskNewEditActivity.EXTRA_TIME_LOG, task.getTimeLog());
         startActivityForResult(intent, EDIT_TASK_REQUEST);
     }
 
@@ -150,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         // Get data from the response activity
         Task task = new Task();
         task.setCategoryId(categoryId);
+        task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+        task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
 
         Date startDate = new Date();
         startDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_START_DATE,-1));
@@ -174,16 +192,26 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             // Check if task has been created and assigned a category
             int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
+
             if (id == -1) {
                 Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
                 return;
             }
             Task task = createTaskFromIntent(data);
             task.setId(id);
+            int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+            if (categoryId == -1) {
+                Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
+                return;
+            }
+            task.setCategoryId(categoryId);
+            task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+            task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
+
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Not Saved", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Task not Saved", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -199,13 +227,17 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID);
+        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.icons8task64)).getBitmap();
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID)
+                .setLargeIcon(bitmap)
+                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(contentIntent);
-
-        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        mBuilder
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_notifications_custom);
 
         LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
 

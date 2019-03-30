@@ -12,6 +12,9 @@ import com.buddy.main.R;
 
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /*
  * List Adapter for Task List RecycleView extends ListAdapter to deal with large dataset
  * Plus the use of DiffUtil class to add animations when user interacts with the list
@@ -47,11 +50,13 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
     public class TaskViewHolder extends RecyclerView.ViewHolder {
         private TextView taskName;
         private TextView taskDescription;
+        private TextView taskSchedule;
 
         public TaskViewHolder(View view) {
             super(view);
             taskName = view.findViewById(R.id.task_name);
             taskDescription = view.findViewById(R.id.task_description);
+            taskSchedule = view.findViewById(R.id.task_schedule);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,6 +86,9 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         Task task = getItem(position);
         viewHolder.taskName.setText(task.getName());
         viewHolder.taskDescription.setText(task.getDescription());
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+        viewHolder.taskSchedule.setText(df.format(task.getStartDate()));
     }
 }
 
