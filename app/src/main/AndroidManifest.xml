@@ -48,6 +48,9 @@
         <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
         <activity android:name="com.buddy.activity.CategoryNewEditActivity" />
         <activity android:name="com.buddy.activity.NotesActivity" />
+        <service
+            android:name="com.buddy.service.FetchAddressIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

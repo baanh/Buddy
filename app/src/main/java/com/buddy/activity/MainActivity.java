@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.buddy.adapters.TaskListAdapter;
 import com.buddy.entity.Task;
 import com.buddy.main.R;
+import com.buddy.util.Constants;
 import com.buddy.viewmodel.TaskViewModel;
 
 import java.util.Date;
@@ -32,9 +33,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
     private TaskViewModel mTaskViewModel;
-
-    public static final int NEW_TASK_REQUEST = 1;
-    public static final int EDIT_TASK_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
      */
     public void newEditTask(MenuItem view) {
         Intent newTaskIntent = new Intent(this, TaskNewEditActivity.class);
-        startActivityForResult(newTaskIntent, NEW_TASK_REQUEST);
+        startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
     }
 
     /*
@@ -133,19 +131,19 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public void onItemClick(Task task) {
         Intent intent = new Intent(this, TaskNewEditActivity.class);
-        intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
-        intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
-        intent.putExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, task.getCategoryId());
-        intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
-        intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
-        startActivityForResult(intent, EDIT_TASK_REQUEST);
+        intent.putExtra(Constants.EXTRA_ID, task.getId());
+        intent.putExtra(Constants.EXTRA_NAME, task.getName());
+        intent.putExtra(Constants.EXTRA_DESC, task.getDescription());
+        intent.putExtra(Constants.EXTRA_CATEGORY_ID, task.getCategoryId());
+        intent.putExtra(Constants.EXTRA_START_DATE, task.getStartDate().getTime());
+        intent.putExtra(Constants.EXTRA_END_DATE, task.getEndDate().getTime());
+        intent.putExtra(Constants.EXTRA_NOTES, task.getNotes());
+        startActivityForResult(intent, Constants.EDIT_TASK_REQUEST);
     }
 
     public Task createTaskFromIntent(Intent data) {
         // Check if user has chosen category
-        int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+        int categoryId = data.getIntExtra(Constants.EXTRA_CATEGORY_ID, -1);
         if (categoryId == -1) {
             Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
             return null;
@@ -155,13 +153,13 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         task.setCategoryId(categoryId);
 
         Date startDate = new Date();
-        startDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_START_DATE,-1));
+        startDate.setTime(data.getLongExtra(Constants.EXTRA_REPLY_START_DATE,-1));
         Date endDate = new Date();
-        endDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_END_DATE,-1));
+        endDate.setTime(data.getLongExtra(Constants.EXTRA_REPLY_END_DATE,-1));
 
-        task.setName(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME));
-        task.setDescription(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
-        task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+        task.setName(data.getStringExtra(Constants.EXTRA_REPLY_NAME));
+        task.setDescription(data.getStringExtra(Constants.EXTRA_REPLY_DESC));
+        task.setNotes(data.getStringExtra(Constants.EXTRA_NOTES));
         task.setStartDate(startDate);
         task.setEndDate(endDate);
         return task;
@@ -170,13 +168,13 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == Constants.NEW_TASK_REQUEST && resultCode == RESULT_OK) {
             Task task = createTaskFromIntent(data);
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
-        } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             // Check if task has been created and assigned a category
-            int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
+            int id = data.getIntExtra(Constants.EXTRA_ID, -1);
             if (id == -1) {
                 Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
                 return;
