@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@mipmap/ic_launcher_round" />
+        android:src="@drawable/icons8task64"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -38,7 +38,6 @@
             android:id="@+id/task_schedule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="1/1/2020" />
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 </LinearLayout>

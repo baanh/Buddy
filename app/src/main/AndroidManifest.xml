@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/icon_launcher_custom"
@@ -46,8 +50,10 @@
             android:name="com.buddy.activity.TaskNewEditActivity"
             android:label="New Task" />
         <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
-        <activity android:name="com.buddy.activity.CategoryNewEditActivity" />
-        <activity android:name="com.buddy.activity.NotesActivity" />
+        <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
+        <activity android:name="com.buddy.activity.NotesActivity"/>
+        <activity android:name="com.buddy.util.Contact" />
+        <activity android:name="com.buddy.util.Dialer" />
         <service
             android:name="com.buddy.service.FetchAddressIntentService"
             android:exported="false"/>

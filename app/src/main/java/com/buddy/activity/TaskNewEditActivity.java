@@ -2,7 +2,9 @@ package com.buddy.activity;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,9 +25,11 @@ import com.buddy.viewmodel.CategoryViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
+    private static final String TAG = "Notes: ";
     private EditText editTaskName;
     private EditText editTaskDescription;
     private TextView textStartTime;
@@ -34,12 +38,18 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private DateTimePickerFragment dateTimePickerFragment;
     private CategorySelectionFragment categorySelectionFragment;
     private EditText notesGist;
+    private Button logStart, logEnd;
+    private EditText loggedTime;
     private EditText txtAddress;
 
+    private String notesData = "";
+    private Date timeLogged;
+    private String timeLog = "00:00";
     private Date startDate;
     private Date endDate;
     private Category category;
-    private String notesData;
+
+    public static final String EXTRA_TIME_LOG = "com.buddy.tasklistsql.EXTRA_TIME_LOG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +118,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (!intent.hasExtra(Constants.EXTRA_ID)) {
             setTitle("New Task");
+            loggedTime.setText(timeLog);
             return;
         }
         setTitle("Edit Task");
@@ -128,6 +139,9 @@ public class TaskNewEditActivity extends AppCompatActivity {
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         category = categoryViewModel.findCategoryById(categoryId);
         textCategory.setText(category.getName());
+
+        timeLog = intent.getStringExtra(EXTRA_TIME_LOG);
+        loggedTime.setText(timeLog);
     }
 
     @Override
@@ -162,6 +176,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         response.putExtra(Constants.EXTRA_REPLY_START_DATE, startDate.getTime());
         response.putExtra(Constants.EXTRA_REPLY_END_DATE, endDate.getTime());
         response.putExtra(Constants.EXTRA_NOTES, notesData);
+        response.putExtra(EXTRA_TIME_LOG, timeLog);
 
         int id = getIntent().getIntExtra(Constants.EXTRA_ID, -1);
         if (id != -1) {
@@ -170,6 +185,27 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
         setResult(RESULT_OK, response);
         finish();
+    }
+
+    public void closeTask(MenuItem view) {
+        AlertDialog closingDialog = new AlertDialog.Builder(this).create();
+        closingDialog.setTitle("Task not saved");
+        closingDialog.setMessage("The current task is not saved. Are you sure you want to exit?");
+        closingDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+        closingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    }
+                });
+        closingDialog.show();
     }
 
     public void openNotes(View view) {
@@ -195,5 +231,23 @@ public class TaskNewEditActivity extends AppCompatActivity {
         } else {
             notesGist.setText(note.substring(1, 50) + "...");
         }
+    }
+
+    //Function to start the time log
+    public void timeLogStart(View view) {
+        logStart.setEnabled(false);
+        logEnd.setEnabled(true);
+        timeLogged = Calendar.getInstance().getTime();
+    }
+
+    //Function to stop and save the time log
+    public void timeLogEnd(View view) {
+        logStart.setEnabled(true);
+        logEnd.setEnabled(false);
+        long timeDifferenceMiliSec = Calendar.getInstance().getTime().getTime() - timeLogged.getTime();
+        int hours = (int) timeDifferenceMiliSec / (1000 * 60 * 60);
+        int mins = (int) (timeDifferenceMiliSec / (1000 * 60)) % 60;
+        timeLog = String.format("%02d:%02d", hours, mins);
+        loggedTime.setText(timeLog);
     }
 }

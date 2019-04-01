@@ -30,6 +30,9 @@ public class Task {
     @ColumnInfo(name = "categoryId")
     private int categoryId;
 
+    @ColumnInfo(name = "loggedTime")
+    private String timeLog;
+
     @ColumnInfo(name = "startDate")
     private Date startDate;
 
@@ -68,7 +71,6 @@ public class Task {
         this.description = description;
     }
 
-    public int getCategoryId() { return categoryId; }
     public String getNotes() {
         return notes;
     }
@@ -77,8 +79,20 @@ public class Task {
         this.notes = notes;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getTimeLog() {
+        return timeLog;
+    }
+
+    public void setTimeLog(String timeLog) {
+        this.timeLog = timeLog;
     }
 
     public Date getStartDate() {

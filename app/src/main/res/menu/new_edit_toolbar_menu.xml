@@ -7,4 +7,10 @@
         android:onClick="saveTask"
         android:title="@string/save_btn_text"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_close"
+        android:onClick="closeTask"
+        android:title="Close"
+        app:showAsAction="ifRoom" />
 </menu>

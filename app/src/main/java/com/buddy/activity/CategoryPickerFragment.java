@@ -25,16 +25,13 @@ import com.buddy.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategorySelectionFragment extends DialogFragment {
-    protected Button btnNewCategory;
+public class CategorySelectorFragment extends DialogFragment {
     private Category selectCategory = null;
     private List<Category> allCategories;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Get view
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_category_selection, null);
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         allCategories = categoryViewModel.getAllCategories();
         List<String> categoryNames = new ArrayList<>();
@@ -43,22 +40,13 @@ public class CategorySelectionFragment extends DialogFragment {
             categoryNames.add(cat.getName());
         }
 
-        btnNewCategory = view.findViewById(R.id.btn_new_category);
-        btnNewCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newEditIntent = new Intent(getActivity(), CategoryNewEditActivity.class);
-                startActivity(newEditIntent);
-            }
-        });
-
         // Build a dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Select Category");
         builder.setItems(categoryNames.toArray(new String[0]), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 setSelectCategory(allCategories.get(which));
-                TextView txtCategory = getActivity().findViewById(R.id.textView_category);
+                TextView txtCategory = getActivity().findViewById(R.id.txt_category);
                 txtCategory.setText(selectCategory.getName());
             }
         });
