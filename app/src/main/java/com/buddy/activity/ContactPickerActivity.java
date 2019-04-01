@@ -8,7 +8,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import com.buddy.main.R;
 
-public class ContactSelectionActivity extends AppCompatActivity {
+public class ContactPickerActivity extends AppCompatActivity {
     ListView contactListView;
 
     @Override

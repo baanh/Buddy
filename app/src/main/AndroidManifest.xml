@@ -49,14 +49,10 @@
         <activity
             android:name="com.buddy.activity.TaskNewEditActivity"
             android:label="New Task" />
-        <activity android:name="com.buddy.activity.TaskGroupSelectActivity" />
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
         <activity android:name="com.buddy.activity.NotesActivity"/>
-        <activity android:name="com.buddy.util.Contact" />
+        <activity android:name="com.buddy.activity.ContactPickerActivity" />
         <activity android:name="com.buddy.util.Dialer" />
-        <service
-            android:name="com.buddy.service.FetchAddressIntentService"
-            android:exported="false"/>
     </application>
 
 </manifest>

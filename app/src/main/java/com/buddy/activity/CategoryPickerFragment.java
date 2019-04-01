@@ -25,7 +25,7 @@ import com.buddy.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategorySelectorFragment extends DialogFragment {
+public class CategoryPickerFragment extends DialogFragment {
     private Category selectCategory = null;
     private List<Category> allCategories;
 

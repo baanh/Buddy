@@ -25,18 +25,17 @@ import com.buddy.viewmodel.CategoryViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
-    private static final String TAG = "Notes: ";
     private EditText editTaskName;
     private EditText editTaskDescription;
     private TextView textStartTime;
     private TextView textEndTime;
     private TextView textCategory;
-    private DateTimePickerFragment dateTimePickerFragment;
-    private CategorySelectionFragment categorySelectionFragment;
+    private TextView textPriority;
+    private DateTimePickerFragment dateTimePicker;
+    private CategoryPickerFragment categoryPicker;
     private EditText notesGist;
     private Button logStart, logEnd;
     private EditText loggedTime;
@@ -49,20 +48,15 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private Date endDate;
     private Category category;
 
-    public static final String EXTRA_TIME_LOG = "com.buddy.tasklistsql.EXTRA_TIME_LOG";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_edit_task);
+        initializeViews();
+        setNewEditEnvironment();
 
-        editTaskName = findViewById(R.id.edit_task_name);
-        editTaskDescription = findViewById(R.id.edit_task_description);
-        textStartTime = findViewById(R.id.textview_start_time);
-        textEndTime = findViewById(R.id.textview_end_time);
-
-        TextView txtViewMap = findViewById(R.id.txt_view_map);
-        txtAddress = findViewById(R.id.edit_address);
+        // Open map activity when clicking on map button
+        TextView txtViewMap = findViewById(R.id.btn_view_map);
         txtViewMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,23 +66,18 @@ public class TaskNewEditActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout categorySelect = findViewById(R.id.category_select_view);
-        textCategory = categorySelect.findViewById(R.id.textView_category);
-        notesGist = findViewById(R.id.notesGist);
-        setNewEditEnvironment();
-
         // Select start time and end time, use Bundle to pass data to dialog object
         final Bundle args = new Bundle();
-        dateTimePickerFragment = new DateTimePickerFragment();
-        dateTimePickerFragment.setStartTime(startDate);
-        dateTimePickerFragment.setEndTime(endDate);
+        dateTimePicker = new DateTimePickerFragment();
+        dateTimePicker.setStartTime(startDate);
+        dateTimePicker.setEndTime(endDate);
         RelativeLayout startTimeView = findViewById(R.id.start_time_view);
         startTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 args.putString(DateTimePickerFragment.EXTRA_TIME, DateTimePickerFragment.START_TIME_LABEL);
-                dateTimePickerFragment.setArguments(args);
-                dateTimePickerFragment.show(getSupportFragmentManager(), "startTimePicker");
+                dateTimePicker.setArguments(args);
+                dateTimePicker.show(getSupportFragmentManager(), "startTimePicker");
             }
         });
         RelativeLayout endTimeView = findViewById(R.id.end_time_view);
@@ -96,22 +85,51 @@ public class TaskNewEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 args.putString(DateTimePickerFragment.EXTRA_TIME, DateTimePickerFragment.END_TIME_LABEL);
-                dateTimePickerFragment.setArguments(args);
-                dateTimePickerFragment.show(getSupportFragmentManager(), "endTimePicker");
+                dateTimePicker.setArguments(args);
+                dateTimePicker.show(getSupportFragmentManager(), "endTimePicker");
             }
         });
 
-        // Select category
-        categorySelectionFragment = new CategorySelectionFragment();
-        categorySelect = findViewById(R.id.category_select_view);
+        // Select priority listener
+        final PriorityPickerFragment priorityPicker = new PriorityPickerFragment();
+        LinearLayout prioritySelect = findViewById(R.id.priority_select_view);
+        prioritySelect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                priorityPicker.show(getSupportFragmentManager(), "priorityPicker");
+            }
+        });
+
+        // Select category listener
+        categoryPicker = new CategoryPickerFragment();
+        LinearLayout categorySelect = findViewById(R.id.category_select_view);
         categorySelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                categorySelectionFragment.show(getSupportFragmentManager(), "categorySelection");
+                categoryPicker.show(getSupportFragmentManager(), "categoryPicker");
             }
         });
     }
 
+    /**
+     * Initialize views used for this whole class of activity
+     */
+    private void initializeViews() {
+        editTaskName = findViewById(R.id.edit_task_name);
+        editTaskDescription = findViewById(R.id.edit_task_description);
+        textStartTime = findViewById(R.id.textview_start_time);
+        textEndTime = findViewById(R.id.textview_end_time);
+        logEnd = findViewById(R.id.logEnd);
+        logStart = findViewById(R.id.logStart);
+        loggedTime = findViewById(R.id.loggedTime);
+        txtAddress = findViewById(R.id.edit_address);
+        notesGist = findViewById(R.id.notesGist);
+        textCategory = findViewById(R.id.txt_category);
+        textPriority = findViewById(R.id.txt_priority);
+    }
+
+    /**
+     * Get data from the previous activity and bind them into views
+     */
     @SuppressLint("SetTextI18n")
     public void setNewEditEnvironment() {
         // Get data from request activity to identify whether it is a create new or edit action
@@ -140,7 +158,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         category = categoryViewModel.findCategoryById(categoryId);
         textCategory.setText(category.getName());
 
-        timeLog = intent.getStringExtra(EXTRA_TIME_LOG);
+        timeLog = intent.getStringExtra(Constants.EXTRA_TIME_LOG);
         loggedTime.setText(timeLog);
     }
 
@@ -156,12 +174,12 @@ public class TaskNewEditActivity extends AppCompatActivity {
     public void saveTask(MenuItem view) {
         String name = editTaskName.getText().toString();
         String description = editTaskDescription.getText().toString();
-        startDate = dateTimePickerFragment.getStartTime() != null ?
-                dateTimePickerFragment.getStartTime() : startDate;
-        endDate = dateTimePickerFragment.getEndTime() != null ?
-                dateTimePickerFragment.getEndTime() : endDate;
-        category = categorySelectionFragment.getSelectCategory() != null ?
-                categorySelectionFragment.getSelectCategory() : category;
+        startDate = dateTimePicker.getStartTime() != null ?
+                dateTimePicker.getStartTime() : startDate;
+        endDate = dateTimePicker.getEndTime() != null ?
+                dateTimePicker.getEndTime() : endDate;
+        category = categoryPicker.getSelectCategory() != null ?
+                categoryPicker.getSelectCategory() : category;
         int categoryId = category.getId();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(description)) {
@@ -176,7 +194,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         response.putExtra(Constants.EXTRA_REPLY_START_DATE, startDate.getTime());
         response.putExtra(Constants.EXTRA_REPLY_END_DATE, endDate.getTime());
         response.putExtra(Constants.EXTRA_NOTES, notesData);
-        response.putExtra(EXTRA_TIME_LOG, timeLog);
+        response.putExtra(Constants.EXTRA_TIME_LOG, timeLog);
 
         int id = getIntent().getIntExtra(Constants.EXTRA_ID, -1);
         if (id != -1) {
