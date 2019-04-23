@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,20 +14,26 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buddy.entity.Category;
+import com.buddy.entity.UserContact;
 import com.buddy.main.R;
 import com.buddy.util.Constants;
 import com.buddy.viewmodel.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
@@ -33,7 +42,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private TextView textStartTime;
     private TextView textEndTime;
     private TextView textCategory;
-    private TextView textPriority;
+    // private TextView textPriority;
     private DateTimePickerFragment dateTimePicker;
     private CategoryPickerFragment categoryPicker;
     private EditText notesGist;
@@ -47,6 +56,9 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private Date startDate;
     private Date endDate;
     private Category category;
+    private List<UserContact> inviteeContacts;
+
+    private MultiAutoCompleteTextView txtInvitees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +120,69 @@ public class TaskNewEditActivity extends AppCompatActivity {
                 categoryPicker.show(getSupportFragmentManager(), "categoryPicker");
             }
         });
+
+        // Set adapter for auto complete userContacts to show list
+        try {
+            List<UserContact> userContacts = new FetchUserContacts().execute().get();
+            List<String> contactsToShow = new ArrayList<>();
+            for (UserContact contact : userContacts) {
+                contactsToShow.add(contact.getName()
+                        + ";" + contact.getPhone()
+                        + ";" + contact.getEmail());
+            }
+            ArrayAdapter<String> contactAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, contactsToShow);
+            txtInvitees.setAdapter(contactAdapter);
+            txtInvitees.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class FetchUserContacts extends AsyncTask<Void, Void, List<UserContact>> {
+
+        @Override
+        protected List<UserContact> doInBackground(Void... voids) {
+            List<UserContact> userContacts = new ArrayList<>();
+            try {
+                Cursor phoneCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null, null, null, null);
+                Cursor emailCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                        null, null, null, null);
+                while (phoneCursor.moveToNext() && emailCursor.moveToNext()) {
+                    String name = phoneCursor.getString(
+                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String phone = phoneCursor.getString(
+                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    String email = emailCursor.getString(
+                            phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    UserContact userContact = new UserContact(name, phone, email);
+                    userContacts.add(userContact);
+                }
+                phoneCursor.close();
+                emailCursor.close();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            return userContacts;
+        }
+    }
+
+    public void startContactActivity(View view) {
+        Intent intent = new Intent(this, InviteeContactActivity.class);
+        intent.putExtra(Constants.EXTRA_INVITEES, txtInvitees.getText().toString());
+        intent.putExtra(Constants.EXTRA_NAME, editTaskName.getText().toString());
+
+        startDate = dateTimePicker.getStartTime() != null ?
+                dateTimePicker.getStartTime() : startDate;
+        endDate = dateTimePicker.getEndTime() != null ?
+                dateTimePicker.getEndTime() : endDate;
+
+        intent.putExtra(Constants.EXTRA_START_DATE, startDate);
+        intent.putExtra(Constants.EXTRA_END_DATE, endDate);
+        startActivity(intent);
     }
 
     /**
@@ -124,7 +199,9 @@ public class TaskNewEditActivity extends AppCompatActivity {
         txtAddress = findViewById(R.id.edit_address);
         notesGist = findViewById(R.id.notesGist);
         textCategory = findViewById(R.id.txt_category);
-        textPriority = findViewById(R.id.txt_priority);
+        // textPriority = findViewById(R.id.txt_priority);
+        txtInvitees = findViewById(R.id.edit_invitees);
+        txtInvitees.setThreshold(Constants.AUTOCOMPLETE_THRESHOLD);
     }
 
     /**
@@ -160,6 +237,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
         timeLog = intent.getStringExtra(Constants.EXTRA_TIME_LOG);
         loggedTime.setText(timeLog);
+        txtInvitees.setText(intent.getStringExtra(Constants.EXTRA_INVITEES));
     }
 
     @Override
@@ -181,6 +259,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         category = categoryPicker.getSelectCategory() != null ?
                 categoryPicker.getSelectCategory() : category;
         int categoryId = category.getId();
+        String invitees = txtInvitees.getText().toString();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(description)) {
             Toast.makeText(this, "Please insert a name and description", Toast.LENGTH_LONG).show();
@@ -195,6 +274,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         response.putExtra(Constants.EXTRA_REPLY_END_DATE, endDate.getTime());
         response.putExtra(Constants.EXTRA_NOTES, notesData);
         response.putExtra(Constants.EXTRA_TIME_LOG, timeLog);
+        response.putExtra(Constants.EXTRA_REPLY_INVITEES, invitees);
 
         int id = getIntent().getIntExtra(Constants.EXTRA_ID, -1);
         if (id != -1) {

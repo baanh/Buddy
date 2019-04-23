@@ -8,6 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
+import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -38,6 +39,9 @@ public class Task {
 
     @ColumnInfo(name = "endDate")
     private Date endDate;
+
+    @ColumnInfo(name = "invitees")
+    private String invitees;
 
     @Ignore
     public Task() { }
@@ -109,5 +113,13 @@ public class Task {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getInvitees() {
+        return invitees;
+    }
+
+    public void setInvitees(String invitees) {
+        this.invitees = invitees;
     }
 }
