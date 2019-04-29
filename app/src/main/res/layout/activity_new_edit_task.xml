@@ -6,6 +6,39 @@
     android:layout_height="match_parent"
     tools:context="com.buddy.activity.TaskNewEditActivity">
 
+    <LinearLayout
+        android:id="@+id/priority_select_view"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/end_time_view">
+
+        <TextView
+            android:id="@+id/label_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Priority"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_task_description" />
+
+        <TextView
+            android:id="@+id/txt_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select priority"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_priority" />
+    </LinearLayout>
+
     <EditText
         android:id="@+id/edit_task_name"
         android:layout_width="0dp"
@@ -36,42 +69,44 @@
         android:hint="@string/edit_task_desc_hint"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_select_view" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_address" />
 
     <LinearLayout
         android:id="@+id/notesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_task_description">
+
         <Button
             android:id="@+id/notesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notes"
-            android:onClick="openNotes"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp" />
+            android:layout_marginRight="16dp"
+            android:onClick="openNotes"
+            android:text="Notes" />
 
         <EditText
             android:id="@+id/notesGist"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="Notes Gist"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:editable="false"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp" />
+            android:layout_marginRight="16dp"
+            android:editable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="Notes Gist" />
 
     </LinearLayout>
 
@@ -133,21 +168,6 @@
 
     </LinearLayout>
 
-    <Switch
-        android:id="@+id/switch_all_day"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="All day"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_task_name" />
-
     <RelativeLayout
         android:id="@+id/start_time_view"
         android:layout_width="0dp"
@@ -157,19 +177,19 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:background="@drawable/ripple_effect"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch_all_day"
-        android:background="@drawable/ripple_effect">
+        app:layout_constraintTop_toBottomOf="@+id/edit_task_name">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start" />
+            android:text="Start Date" />
 
         <TextView
             android:id="@+id/textview_start_time"
@@ -186,7 +206,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/ripple_effect"
@@ -201,7 +221,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="End" />
+            android:text="Due Date" />
 
         <TextView
             android:id="@+id/textview_end_time"
@@ -213,20 +233,21 @@
     </RelativeLayout>
 
     <EditText
-        android:id="@+id/edit_location"
+        android:id="@+id/edit_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:ems="10"
         android:hint="Location"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_view_map"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/end_time_view" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_invitees" />
 
     <LinearLayout
         android:id="@+id/category_select_view"
@@ -240,38 +261,74 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_location">
+        app:layout_constraintTop_toBottomOf="@+id/priority_select_view">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/label_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Category"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_task_description" />
 
         <TextView
-            android:id="@+id/textView_category"
+            android:id="@+id/txt_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Select category"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/label_priority" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView6"
+    <Button
+        android:id="@+id/btn_view_map"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="MAP"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_address"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/getPeople"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="30dp"
+        android:text="Check Invited People"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/edit_invitees"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="Invitees"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toStartOf="@+id/btn_contact"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_select_view" />
+
+    <Button
+        android:id="@+id/btn_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:text="MAP"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBaseline_toBaselineOf="@+id/edit_location"
+        android:onClick="startContactActivity"
+        android:text="Contact"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_invitees"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -9,8 +9,7 @@ import android.widget.EditText;
 
 import com.buddy.main.R;
 
-import static com.buddy.activity.TaskNewEditActivity.EXTRA_ID;
-import static com.buddy.activity.TaskNewEditActivity.EXTRA_NOTES;
+import static com.buddy.util.Constants.EXTRA_NOTES;
 
 public class NotesActivity extends AppCompatActivity {
 

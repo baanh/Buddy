@@ -9,6 +9,7 @@ import android.arch.persistence.room.Update;
 
 import com.buddy.entity.Task;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -27,8 +28,11 @@ public interface TaskDao {
     void deleteAll();
 
     @Query("SELECT * FROM task")
-    LiveData<List<Task>> getAllTask();
+    LiveData<List<Task>> getAllTasks();
 
-    @Query("SELECT * FROM task WHERE id == :taskId")
+    @Query("SELECT * FROM task WHERE id = :taskId")
     Task findTaskById(String taskId);
+
+    @Query("SELECT * FROM task WHERE startDate BETWEEN :from AND :to")
+    List<Task> findTasksBetweenDate(Date from, Date to);
 }

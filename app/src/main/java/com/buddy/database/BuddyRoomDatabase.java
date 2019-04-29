@@ -15,7 +15,7 @@ import com.buddy.dao.TaskDao;
 import com.buddy.entity.Category;
 import com.buddy.entity.Task;
 
-@Database(entities = {Task.class, Category.class}, version = 5)
+@Database(entities = {Task.class, Category.class}, version = 6)
 @TypeConverters({Converters.class})
 public abstract class BuddyRoomDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();

@@ -1,6 +1,5 @@
 package com.buddy.activity;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,14 +9,10 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -32,17 +27,14 @@ import android.widget.Toast;
 import com.buddy.adapters.TaskListAdapter;
 import com.buddy.entity.Task;
 import com.buddy.main.R;
+import com.buddy.util.Constants;
 import com.buddy.viewmodel.TaskViewModel;
 
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
-    private RecyclerView mTaskListRecycleView;
     private TaskViewModel mTaskViewModel;
-
-    private static final int NEW_TASK_REQUEST = 1;
-    private static final int EDIT_TASK_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         setContentView(R.layout.activity_main);
 
         // Get recycleView to populate a list of tasks
-        mTaskListRecycleView = findViewById(R.id.my_task_list);
+        RecyclerView mTaskListRecycleView = findViewById(R.id.my_task_list);
 
         // use a LinearLayout Manager
         RecyclerView.LayoutManager mTaskListLayoutManager = new LinearLayoutManager(this);
@@ -103,27 +95,25 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
             case R.id.push_notifications:
                 pushNotifications();
                 return true;
-
             case R.id.action_favorite:
                 return true;
-
             case R.id.action_settings:
                 return true;
-
             case R.id.action_delete_all_tasks:
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
-
             case R.id.action_new_category:
                 Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
                 startActivity(newCategoryIntent);
                 return true;
-
+            case R.id.monthly_view:
+                Intent intent = new Intent(this, TaskMonthlyViewActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_exit:
                 finish();
             default:
@@ -136,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
      */
     public void newEditTask(MenuItem view) {
         Intent newTaskIntent = new Intent(this, TaskNewEditActivity.class);
-        startActivityForResult(newTaskIntent, NEW_TASK_REQUEST);
+        startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
     }
 
     /*
@@ -145,20 +135,20 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public void onItemClick(Task task) {
         Intent intent = new Intent(this, TaskNewEditActivity.class);
-        intent.putExtra(TaskNewEditActivity.EXTRA_ID, task.getId());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NAME, task.getName());
-        intent.putExtra(TaskNewEditActivity.EXTRA_DESC, task.getDescription());
-        intent.putExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, task.getCategoryId());
-        intent.putExtra(TaskNewEditActivity.EXTRA_START_DATE, task.getStartDate().getTime());
-        intent.putExtra(TaskNewEditActivity.EXTRA_END_DATE, task.getEndDate().getTime());
-        intent.putExtra(TaskNewEditActivity.EXTRA_NOTES, task.getNotes());
-        intent.putExtra(TaskNewEditActivity.EXTRA_TIME_LOG, task.getTimeLog());
-        startActivityForResult(intent, EDIT_TASK_REQUEST);
+        intent.putExtra(Constants.EXTRA_ID, task.getId());
+        intent.putExtra(Constants.EXTRA_NAME, task.getName());
+        intent.putExtra(Constants.EXTRA_DESC, task.getDescription());
+        intent.putExtra(Constants.EXTRA_CATEGORY_ID, task.getCategoryId());
+        intent.putExtra(Constants.EXTRA_START_DATE, task.getStartDate().getTime());
+        intent.putExtra(Constants.EXTRA_END_DATE, task.getEndDate().getTime());
+        intent.putExtra(Constants.EXTRA_NOTES, task.getNotes());
+        intent.putExtra(Constants.EXTRA_INVITEES, task.getInvitees());
+        startActivityForResult(intent, Constants.EDIT_TASK_REQUEST);
     }
 
     public Task createTaskFromIntent(Intent data) {
         // Check if user has chosen category
-        int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
+        int categoryId = data.getIntExtra(Constants.EXTRA_CATEGORY_ID, -1);
         if (categoryId == -1) {
             Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
             return null;
@@ -166,48 +156,39 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         // Get data from the response activity
         Task task = new Task();
         task.setCategoryId(categoryId);
-        task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
-        task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
+        task.setNotes(data.getStringExtra(Constants.EXTRA_NOTES));
+        task.setTimeLog(data.getStringExtra(Constants.EXTRA_TIME_LOG));
 
         Date startDate = new Date();
-        startDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_START_DATE,-1));
+        startDate.setTime(data.getLongExtra(Constants.EXTRA_REPLY_START_DATE,-1));
         Date endDate = new Date();
-        endDate.setTime(data.getLongExtra(TaskNewEditActivity.EXTRA_REPLY_END_DATE,-1));
+        endDate.setTime(data.getLongExtra(Constants.EXTRA_REPLY_END_DATE,-1));
 
-        task.setName(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_NAME));
-        task.setDescription(data.getStringExtra(TaskNewEditActivity.EXTRA_REPLY_DESC));
-        task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
+        task.setName(data.getStringExtra(Constants.EXTRA_REPLY_NAME));
+        task.setDescription(data.getStringExtra(Constants.EXTRA_REPLY_DESC));
+        task.setNotes(data.getStringExtra(Constants.EXTRA_NOTES));
         task.setStartDate(startDate);
         task.setEndDate(endDate);
+        task.setInvitees(data.getStringExtra(Constants.EXTRA_REPLY_INVITEES));
         return task;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NEW_TASK_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == Constants.NEW_TASK_REQUEST && resultCode == RESULT_OK) {
             Task task = createTaskFromIntent(data);
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
-        } else if (requestCode == EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
+        } else if (requestCode == Constants.EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
             // Check if task has been created and assigned a category
-            int id = data.getIntExtra(TaskNewEditActivity.EXTRA_ID, -1);
-
+            int id = data.getIntExtra(Constants.EXTRA_ID, -1);
             if (id == -1) {
                 Toast.makeText(getApplicationContext(), "Task can't be updated", Toast.LENGTH_LONG).show();
                 return;
             }
             Task task = createTaskFromIntent(data);
             task.setId(id);
-            int categoryId = data.getIntExtra(TaskNewEditActivity.EXTRA_CATEGORY_ID, -1);
-            if (categoryId == -1) {
-                Toast.makeText(getApplicationContext(), "Task can't be created", Toast.LENGTH_LONG).show();
-                return;
-            }
-            task.setCategoryId(categoryId);
-            task.setNotes(data.getStringExtra(TaskNewEditActivity.EXTRA_NOTES));
-            task.setTimeLog(data.getStringExtra(TaskNewEditActivity.EXTRA_TIME_LOG));
-
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
@@ -235,8 +216,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder
-                .setContentIntent(contentIntent)
+        mBuilder.setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_notifications_custom);
 
         LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();

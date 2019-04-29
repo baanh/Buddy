@@ -25,18 +25,14 @@ import com.buddy.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategorySelectionFragment extends DialogFragment {
-    private CategoryViewModel categoryViewModel;
-    private Button btnNewCategory;
+public class CategoryPickerFragment extends DialogFragment {
     private Category selectCategory = null;
     private List<Category> allCategories;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Get view
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_category_selection, null);
-        categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         allCategories = categoryViewModel.getAllCategories();
         List<String> categoryNames = new ArrayList<>();
         // Get names of categories
@@ -44,33 +40,20 @@ public class CategorySelectionFragment extends DialogFragment {
             categoryNames.add(cat.getName());
         }
 
-        btnNewCategory = view.findViewById(R.id.btn_new_category);
-        btnNewCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newEditIntent = new Intent(getActivity(), CategoryNewEditActivity.class);
-                startActivity(newEditIntent);
-            }
-        });
-
         // Build a dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Select Category");
-        builder.setSingleChoiceItems(categoryNames.toArray(new String[0]), -1, new DialogInterface.OnClickListener() {
+        builder.setItems(categoryNames.toArray(new String[0]), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 setSelectCategory(allCategories.get(which));
-            }
-        });
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO User select a category and confirm
-                TextView txtCategory = getActivity().findViewById(R.id.textView_category);
+                TextView txtCategory = getActivity().findViewById(R.id.txt_category);
                 txtCategory.setText(selectCategory.getName());
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("New Category", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // TODO User cancelled the dialog
+                Intent intent = new Intent(getActivity(), CategoryNewEditActivity.class);
+                startActivity(intent);
             }
         });
 
