@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.buddy.main">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
-    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
-    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +20,7 @@
         android:roundIcon="@mipmap/icon_launcher_custom_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name="com.buddy.activity.WebBrowserActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -37,7 +35,7 @@
 
         <activity
             android:name="com.buddy.activity.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity android:name="com.buddy.activity.TaskMonthlyViewActivity" />
         <activity android:name="com.buddy.activity.MainActivity">
             <intent-filter>
@@ -49,8 +47,8 @@
         <activity
             android:name="com.buddy.activity.TaskNewEditActivity"
             android:label="New Task" />
-        <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
-        <activity android:name="com.buddy.activity.NotesActivity"/>
+        <activity android:name="com.buddy.activity.CategoryNewEditActivity" />
+        <activity android:name="com.buddy.activity.NotesActivity" />
         <activity android:name="com.buddy.activity.InviteeContactActivity" />
         <activity android:name="com.buddy.util.Dialer" />
     </application>
