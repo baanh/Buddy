@@ -38,6 +38,7 @@
         <activity
             android:name="com.buddy.activity.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
+        <receiver android:name="com.buddy.activity.BroadcastManager" />
         <activity android:name="com.buddy.activity.TaskMonthlyViewActivity" />
         <activity android:name="com.buddy.activity.MainActivity">
             <intent-filter>
