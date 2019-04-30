@@ -68,8 +68,8 @@ public class TaskNewEditActivity extends AppCompatActivity {
         setNewEditEnvironment();
 
         // Open map activity when clicking on map button
-        TextView txtViewMap = findViewById(R.id.btn_view_map);
-        txtViewMap.setOnClickListener(new View.OnClickListener() {
+        Button btnViewMap = findViewById(R.id.btn_view_map);
+        btnViewMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
