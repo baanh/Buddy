@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 return true;
             case R.id.action_exit:
                 finish();
+            case R.id.action_web:
+                Intent intentWeb = new Intent(this, WebBrowserActivity.class);
+                startActivity(intentWeb);
             default:
                 return super.onOptionsItemSelected(item);
         }

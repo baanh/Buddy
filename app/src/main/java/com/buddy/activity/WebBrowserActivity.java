@@ -18,6 +18,6 @@ public class WebBrowserActivity extends AppCompatActivity {
 
         webView = (WebView) findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("http://www.google.com");
+        webView.loadUrl("https://www.google.com");
     }
 }
