@@ -39,4 +39,9 @@
         android:title="Exit"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_web"
+        android:title="Web"
+        app:showAsAction="never" />
+
 </menu>
