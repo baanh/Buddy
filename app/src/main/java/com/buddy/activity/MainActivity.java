@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     }
 
     public void scheduleNotification (Task task, int reminderTime, Boolean isSetBefore) {
-        String notice = "Reminder for " + task.getDescription() + " at " + task.getStartDate().getHours() + ":" + task.getStartDate().getMinutes();
+        String notice = "Reminder for " + task.getDescription() + " at " + String.format("%02d:%02d", task.getStartDate().getHours(), task.getStartDate().getMinutes());
 
         String channelID = Integer.toString(task.getId());
 
@@ -221,15 +221,17 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
         Date noticeDate = new Date(task.getStartDate().getTime() - (reminderTime * 60 * 1000));
 
-        Calendar cal = new GregorianCalendar();
-        cal.set(Calendar.YEAR, noticeDate.getYear());
+        Log.i("Notification Time", noticeDate.toString());
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.YEAR, noticeDate.getYear() + 1900);
         cal.set(Calendar.MONTH, noticeDate.getMonth());
         cal.set(Calendar.DATE, noticeDate.getDate());
         cal.set(Calendar.HOUR_OF_DAY, noticeDate.getHours());
         cal.set(Calendar.MINUTE, noticeDate.getMinutes());
         cal.set(Calendar.SECOND, 0);
 
-        Log.i("Notification Time: ", cal.getTime().toString());
+        Log.i("Notification Time", cal.getTime().toString());
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent activity = PendingIntent.getActivity(this, task.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
