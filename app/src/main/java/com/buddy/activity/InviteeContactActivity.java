@@ -20,6 +20,7 @@ import com.buddy.main.R;
 import com.buddy.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import androidx.recyclerview.selection.SelectionPredicates;
@@ -32,6 +33,7 @@ public class InviteeContactActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private SelectionTracker mSelectionTracker;
     private TextView txtSelectionCount;
+    private List<UserContact> selectedContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class InviteeContactActivity extends AppCompatActivity {
             userContactList.add(new UserContact(contactDetails[0], contactDetails[1], contactDetails[2]));
         }
 
+        selectedContacts = new ArrayList<>();
         txtSelectionCount = findViewById(R.id.txt_selection_count);
         inviteeRecyclerView = findViewById(R.id.listView);
         // use this setting to improve performance if you know that changes
@@ -88,7 +91,11 @@ public class InviteeContactActivity extends AppCompatActivity {
             @Override
             public void onSelectionChanged() {
                 super.onSelectionChanged();
-
+                Iterator<UserContact> contactIterator = mSelectionTracker.getSelection().iterator();
+                while (contactIterator.hasNext()) {
+                    selectedContacts.clear();
+                    selectedContacts.add(contactIterator.next());
+                }
                 if (mSelectionTracker.hasSelection()) {
                     txtSelectionCount.setText(String.format("Selection Count: %d", mSelectionTracker.getSelection().size()));
                 } else {
@@ -103,11 +110,11 @@ public class InviteeContactActivity extends AppCompatActivity {
             }
         });
 
-
         mAdapter.setSelectionTracker(mSelectionTracker);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             mSelectionTracker.onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     public void sendSMSMessage(View view) {

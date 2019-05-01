@@ -1,14 +1,12 @@
 package com.buddy.adapters;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.buddy.entity.UserContact;
@@ -17,7 +15,6 @@ import com.buddy.main.R;
 import java.util.List;
 
 import androidx.recyclerview.selection.ItemDetailsLookup;
-import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
 
 public class InviteeListAdapter extends RecyclerView.Adapter<InviteeListAdapter.InviteeViewHolder> {
@@ -65,25 +62,28 @@ public class InviteeListAdapter extends RecyclerView.Adapter<InviteeListAdapter.
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public InviteeListAdapter.InviteeViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public InviteeListAdapter.InviteeViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                   int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.invitee_contact_list_row, parent, false);
-        InviteeViewHolder vh = new InviteeViewHolder(v);
-        return vh;
+        return new InviteeViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(InviteeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull InviteeViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         UserContact item = mDataset.get(position);
-        holder.bind(item, mSelectionTracker.isSelected(item));
+        boolean itemSelected = mSelectionTracker.isSelected(item);
+        holder.bind(item, itemSelected);
         holder.txtName.setText(item.getName());
         holder.txtPhone.setText(item.getPhone());
         holder.txtEmail.setText(item.getEmail());
+        LinearLayout parent = (LinearLayout) holder.txtName.getParent();
+        parent.setBackgroundColor(itemSelected ? Color.CYAN : Color.WHITE);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
