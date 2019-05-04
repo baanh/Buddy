@@ -11,9 +11,12 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
-    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
-    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:allowBackup="true"
@@ -51,7 +54,7 @@
             android:label="New Task" />
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
         <activity android:name="com.buddy.activity.NotesActivity"/>
-        <activity android:name="com.buddy.activity.ContactPickerActivity" />
+        <activity android:name="com.buddy.activity.InviteeContactActivity" />
         <activity android:name="com.buddy.util.Dialer" />
     </application>
 

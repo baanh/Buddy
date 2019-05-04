@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         intent.putExtra(Constants.EXTRA_START_DATE, task.getStartDate().getTime());
         intent.putExtra(Constants.EXTRA_END_DATE, task.getEndDate().getTime());
         intent.putExtra(Constants.EXTRA_NOTES, task.getNotes());
+        intent.putExtra(Constants.EXTRA_INVITEES, task.getInvitees());
         startActivityForResult(intent, Constants.EDIT_TASK_REQUEST);
     }
 
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         task.setNotes(data.getStringExtra(Constants.EXTRA_NOTES));
         task.setStartDate(startDate);
         task.setEndDate(endDate);
+        task.setInvitees(data.getStringExtra(Constants.EXTRA_REPLY_INVITEES));
         return task;
     }
 
