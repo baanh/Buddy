@@ -75,9 +75,14 @@ public class TaskDailyViewActivity extends AppCompatActivity {
     }
 
     public void getTodayTasks(ArrayList tasks){
-        tasks.add(taskText.getText().toString());
         int num = tasks.size();
         speak("Hi Buddy, today you have "+num+"events.");
-        for (int task=0; )
+        for (int i=0; i<tasks.size(); i++){
+            String taskName = tasks.get(i).toString();
+            speak(taskName);
+            /*If we also want it to announce the start and end time of each task,
+            Might need a HashMap structure to store the task and its corresponding times,
+            Not sure what form should the start time and end time be stored and read from*/
+        }
     }
 }
