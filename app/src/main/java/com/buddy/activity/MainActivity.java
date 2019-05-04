@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                cancelAlarm(mTaskListAdapter.getTaskAt(viewHolder.getAdapterPosition()).getId());
                 mTaskViewModel.delete(mTaskListAdapter.getTaskAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(MainActivity.this, "Task deleted", Toast.LENGTH_LONG).show();
             }
@@ -105,11 +107,18 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+          //  case R.id.action_cancel:
+            //    return true;
             case R.id.action_favorite:
                 return true;
             case R.id.action_settings:
                 return true;
             case R.id.action_delete_all_tasks:
+                LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
+
+                for (int i = 0; i < taskList.getValue().size(); i++) {
+                    cancelAlarm(taskList.getValue().get(i).getId());
+                }
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
@@ -185,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.NEW_TASK_REQUEST && resultCode == RESULT_OK) {
             Task task = createTaskFromIntent(data);
-            scheduleNotification(task, 5, false);
+            scheduleNotification(task, 1, false);
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else if (requestCode == Constants.EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
@@ -197,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             }
             Task task = createTaskFromIntent(data);
             task.setId(id);
-            scheduleNotification(task, 5, true);
+            scheduleNotification(task, 1, true);
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
@@ -205,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         }
     }
 
-    public void scheduleNotification (Task task, int reminderTime, Boolean isSetBefore) {
+    public void scheduleNotification (Task task, int reminderTime, boolean isSetBefore) {
         String notice = "Reminder for " + task.getDescription() + " at " + String.format("%02d:%02d", task.getStartDate().getHours(), task.getStartDate().getMinutes());
 
         String channelID = Integer.toString(task.getId());
@@ -243,16 +252,33 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         notificationIntent.putExtra(BroadcastManager.NOTIFICATION_ID, task.getId());
         notificationIntent.putExtra(BroadcastManager.NOTIFICATION, notification);
         notificationIntent.putExtra(BroadcastManager.NOTIFICATION_CHANNEL, channelID);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         if(isSetBefore)
         {
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
         }
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        }
+        else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        }
+    }
+
+    public void cancelAlarm(int ID)
+    {
+        Intent notificationIntent = new Intent(this, BroadcastManager.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, ID, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 
     /*public void pushNotifications() {
