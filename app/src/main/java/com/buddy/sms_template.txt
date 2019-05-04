@@ -1,0 +1,5 @@
+From your team:
+Task: [task_name]
+Due: [task_due]
+Description: [task_description]
+Thanks!

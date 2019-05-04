@@ -23,4 +23,21 @@ public final class Constants {
     public static final String EXTRA_TIME_LOG = "com.buddy.tasklistsql.EXTRA_TIME_LOG";
 
     public static final String[] TASK_PRIORITY_ARRAY = new String[] {"High", "Medium", "Low"};
+
+    // SMS & Email
+    public static final String SMS_TEMPLATE = "From your team:\n" +
+            "Task: [task_name]\n" +
+            "Due: [task_due]\n" +
+            "Description: [task_description]\n" +
+            "Thanks!";
+    public static final String EMAIL_TEMPLATE = "Hi there!\n" +
+            "\n" +
+            "You have new message from your team on Buddy:\n" +
+            "\n" +
+            "Task: [task_name]\n" +
+            "Due: [task_due]\n" +
+            "Description: [task_description]\n" +
+            "\n" +
+            "Thank you and good luck!\n" +
+            "Buddy";
 }

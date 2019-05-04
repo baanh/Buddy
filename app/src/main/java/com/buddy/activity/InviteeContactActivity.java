@@ -20,6 +20,7 @@ import com.buddy.main.R;
 import com.buddy.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class InviteeContactActivity extends AppCompatActivity {
     private SelectionTracker mSelectionTracker;
     private TextView txtSelectionCount;
     private List<UserContact> selectedContacts;
+    private String taskName;
+    private String taskDue;
+    private String taskDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,9 @@ public class InviteeContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invitee_contact);
 
         Intent intent = getIntent();
+        taskName = intent.getStringExtra(Constants.EXTRA_NAME);
+        taskDue = new Date(intent.getLongExtra(Constants.EXTRA_END_DATE, -1)).toString();
+        taskDescription = intent.getStringExtra(Constants.EXTRA_DESC);
         String contactString = intent.getStringExtra(Constants.EXTRA_INVITEES);
 
         List<UserContact> userContactList = new ArrayList<>();
@@ -91,9 +98,9 @@ public class InviteeContactActivity extends AppCompatActivity {
             @Override
             public void onSelectionChanged() {
                 super.onSelectionChanged();
+                selectedContacts.clear();
                 Iterator<UserContact> contactIterator = mSelectionTracker.getSelection().iterator();
                 while (contactIterator.hasNext()) {
-                    selectedContacts.clear();
                     selectedContacts.add(contactIterator.next());
                 }
                 if (mSelectionTracker.hasSelection()) {
@@ -118,21 +125,23 @@ public class InviteeContactActivity extends AppCompatActivity {
     }
 
     public void sendSMSMessage(View view) {
-        // TODO Create sms templates using text files
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("6505551212", null,
-                "Hi, my name is Luke!", null, null);
-        Toast.makeText(getApplicationContext(), "SMS Sent.", Toast.LENGTH_LONG).show();
+        String[] phoneNumberList = getPhoneNumberList();
+//        smsManager.sendTextMessage("6505551212", null,
+//                "Hi, my name is Luke!", null, null);
+        String message = getTextFromTemplate(Constants.SMS_TEMPLATE);
+        for (String aPhoneNumberList : phoneNumberList) {
+            smsManager.sendTextMessage(aPhoneNumberList, null,
+                    message, null, null);
+        }
+        Toast.makeText(getApplicationContext(), "Message has been sent", Toast.LENGTH_LONG).show();
     }
 
     public void sendEmail(View view) {
-        // TODO Create email templates using text files
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Test Email Subject");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi, this is a test email");
-
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"nguye2_anh@bentley.edu"});
-
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "You have new message from Buddy");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, getTextFromTemplate(Constants.EMAIL_TEMPLATE));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, getEmailList());
         //need this to prompts email client only
         emailIntent.setType("message/rfc822");
 
@@ -140,7 +149,30 @@ public class InviteeContactActivity extends AppCompatActivity {
     }
 
     public void dial(View view) {
+        // TODO Display dial pad
+    }
 
+    String[] getEmailList() {
+        String[] emailList = new String[selectedContacts.size()];
+        for (int i = 0; i < selectedContacts.size(); i++) {
+            emailList[i] = selectedContacts.get(i).getEmail();
+        }
+        return emailList;
+    }
+
+    String getTextFromTemplate(@NonNull String messageText) {
+        messageText = messageText.replace("[task_name]", taskName)
+                .replace("[task_due]", taskDue)
+                .replace("[task_description]", taskDescription);
+        return messageText;
+    }
+
+    String[] getPhoneNumberList() {
+        String[] phoneList = new String[selectedContacts.size()];
+        for (int i = 0; i < selectedContacts.size(); i++) {
+            phoneList[i] = selectedContacts.get(i).getPhone().replaceAll("[^\\d]", "");
+        }
+        return phoneList;
     }
 
     @Override

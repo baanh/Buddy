@@ -174,6 +174,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InviteeContactActivity.class);
         intent.putExtra(Constants.EXTRA_INVITEES, txtInvitees.getText().toString());
         intent.putExtra(Constants.EXTRA_NAME, editTaskName.getText().toString());
+        intent.putExtra(Constants.EXTRA_DESC, editTaskDescription.getText().toString());
 
         startDate = dateTimePicker.getStartTime() != null ?
                 dateTimePicker.getStartTime() : startDate;
@@ -181,7 +182,7 @@ public class TaskNewEditActivity extends AppCompatActivity {
                 dateTimePicker.getEndTime() : endDate;
 
         intent.putExtra(Constants.EXTRA_START_DATE, startDate);
-        intent.putExtra(Constants.EXTRA_END_DATE, endDate);
+        intent.putExtra(Constants.EXTRA_END_DATE, endDate.getTime());
         startActivity(intent);
     }
 
