@@ -56,6 +56,9 @@ public class TaskNewEditActivity extends AppCompatActivity {
     private Date startDate;
     private Date endDate;
     private Category category;
+    private List<UserContact> inviteeContacts;
+
+    private MultiAutoCompleteTextView txtInvitees;
 
     private MultiAutoCompleteTextView txtInvitees;
 
