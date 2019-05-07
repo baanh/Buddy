@@ -76,6 +76,11 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             public void onChanged(@Nullable List<Task> tasks) {
                 // Update the cached copy of the words in the adapter.
                 mTaskListAdapter.submitList(tasks);
+                for(int i = 0; i < tasks.size(); i++)
+                {
+                    cancelAlarm(tasks.get(i).getId());
+                    scheduleNotification(tasks.get(i),5);
+                }
             }
         });
 
@@ -194,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.NEW_TASK_REQUEST && resultCode == RESULT_OK) {
             Task task = createTaskFromIntent(data);
-            scheduleNotification(task, 5);
             mTaskViewModel.insert(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else if (requestCode == Constants.EDIT_TASK_REQUEST && resultCode == RESULT_OK) {
@@ -206,8 +210,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             }
             Task task = createTaskFromIntent(data);
             task.setId(id);
-            cancelAlarm(task.getId());
-            scheduleNotification(task, 5);
             mTaskViewModel.update(task);
             Toast.makeText(getApplicationContext(), "Task saved", Toast.LENGTH_LONG).show();
         } else {
@@ -231,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
         Date noticeDate = new Date(task.getStartDate().getTime() - (reminderTime * 60 * 1000));
 
-        Log.i("Notification Time", noticeDate.toString());
         Calendar cal = Calendar.getInstance();
 
         cal.set(Calendar.YEAR, noticeDate.getYear() + 1900);
@@ -241,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         cal.set(Calendar.MINUTE, noticeDate.getMinutes());
         cal.set(Calendar.SECOND, 0);
 
-        Log.i("Notification Time", cal.getTime().toString());
+        Log.i("Alarm Time", cal.getTime().toString());
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent activity = PendingIntent.getActivity(this, task.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         notificationIntent.putExtra(BroadcastManager.NOTIFICATION_CHANNEL, channelID);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
@@ -263,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
         }
+        Log.i("Alarm Id", Integer.toString(task.getId()));
     }
 
     public void cancelAlarm(int ID)
@@ -270,46 +272,11 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         Intent notificationIntent = new Intent(this, BroadcastManager.class);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, ID, notificationIntent, PendingIntent.FLAG_NO_CREATE);
-        PendingIntent activity = PendingIntent.getActivity(this, ID, notificationIntent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null)
         {
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
-            activity.cancel();
+            Log.i("Alarm Id", Integer.toString(ID));
         }
     }
-
-    /*public void pushNotifications() {
-        String channelID = "001";
-        CharSequence channelName = "First Channel";
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName, importance);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.icons8task64)).getBitmap();
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID)
-                .setLargeIcon(bitmap)
-                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(contentIntent)
-                .setSmallIcon(R.drawable.ic_notifications_custom);
-
-        LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
-
-        for (int i = 0; i < taskList.getValue().size(); i++) {
-            mBuilder
-                    .setContentTitle(taskList.getValue().get(i).getName())
-                    .setContentText(taskList.getValue().get(i).getDescription());
-            notificationManager.notify(i, mBuilder.build());
-        }
-
-    }*/
 }
