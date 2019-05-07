@@ -60,10 +60,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
     private MultiAutoCompleteTextView txtInvitees;
 
-    private MultiAutoCompleteTextView txtInvitees;
-
-    private MultiAutoCompleteTextView txtInvitees;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -19,6 +19,8 @@ import java.util.List;
 
 public class TaskDailyViewActivity extends AppCompatActivity {
 
+    private ExpandableListView taskListView;
+    private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listHash;
     private TaskViewModel taskViewModel;                                                                            
@@ -29,17 +31,8 @@ public class TaskDailyViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_by_day);
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-
-        ExpandableListView listView = findViewById(R.id.lvExp);
-        initData();
-        ExpandableListAdapter listAdapter = new TaskExpandableListAdapter(this, listDataHeader, listHash);
-        listView.setAdapter(listAdapter);
-    }
-
-    private void initData() {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
-
         taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(@Nullable List<Task> tasks) {
@@ -55,5 +48,8 @@ public class TaskDailyViewActivity extends AppCompatActivity {
                 }
             }
         });
+        taskListView = findViewById(R.id.task_expandable_list_view);
+        listAdapter = new TaskExpandableListAdapter(this, listDataHeader, listHash);
+        taskListView.setAdapter(listAdapter);
     }
 }
