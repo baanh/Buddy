@@ -3,18 +3,21 @@ package com.buddy.activity;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.buddy.adapters.TaskListAdapter;
 import com.buddy.entity.Task;
 import com.buddy.main.R;
+import com.buddy.util.Constants;
 import com.buddy.viewmodel.TaskViewModel;
 
 import java.text.ParseException;
@@ -69,6 +72,25 @@ public class TaskMonthlyViewActivity extends AppCompatActivity implements TaskLi
                 taskListAdapter.notifyDataSetChanged();
             }
         });
+
+        getSupportActionBar().setTitle("Month");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        FloatingActionButton btnNewTask = findViewById(R.id.btn_new_task);
+        btnNewTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newTaskIntent = new Intent(getApplicationContext(), TaskNewEditActivity.class);
+                startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     /*
