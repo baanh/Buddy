@@ -36,6 +36,7 @@ public class TaskDailyViewActivity extends AppCompatActivity
     private HashMap<String, List<String>> listHash;
     private TaskViewModel taskViewModel;
     private TextView txtTodayDate;
+    private List<Task> tasks;
 
     private TextToSpeech speaker;
 
@@ -60,7 +61,7 @@ public class TaskDailyViewActivity extends AppCompatActivity
             Date mTomorrow = new Date(mToday.getTime() + (1000 * 60 * 60 * 24) - 1);
 
             txtTodayDate.setText(formatter.format(new Date()));
-            List<Task> tasks = taskViewModel.findTasksBetweenDate(mToday, mTomorrow);
+            tasks = taskViewModel.findTasksBetweenDate(mToday, mTomorrow);
             for (Task task : tasks) {
                 List<String> taskDetail = new ArrayList<>();
                 listDataHeader.add(task.getName());
@@ -69,7 +70,6 @@ public class TaskDailyViewActivity extends AppCompatActivity
                 taskDetail.add("Description: " + task.getDescription());
                 listHash.put(listDataHeader.get(listDataHeader.size() - 1), taskDetail);
             }
-            speakTodayTasks();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -100,8 +100,18 @@ public class TaskDailyViewActivity extends AppCompatActivity
 
     @Override
     public void onInit(int status) {
-        if (status != TextToSpeech.ERROR) {
-            speaker.setLanguage(Locale.US);
+        if(status == TextToSpeech.SUCCESS){
+            int result=speaker.setLanguage(Locale.US);
+            if(result==TextToSpeech.LANG_MISSING_DATA ||
+                    result==TextToSpeech.LANG_NOT_SUPPORTED){
+                Log.e("error", "This Language is not supported");
+            }
+            else {
+                speakTodayTasks(tasks);
+            }
+        }
+        else {
+            Log.e("error", "Initiation Failed!");
         }
     }
 
@@ -113,15 +123,14 @@ public class TaskDailyViewActivity extends AppCompatActivity
         super.onPause();
     }
 
-    public void speakTodayTasks() {
-//        int num = tasks.size();
-        speaker.speak("Hi Buddy, today you have events.", TextToSpeech.QUEUE_FLUSH, null);
-//        for (Task task : tasks) {
-//            String taskName = task.getName();
-//            speak(taskName);
-//            /*If we also want it to announce the start and end time of each task,
-//            Might need a HashMap structure to store the task and its corresponding times,
-//            Not sure what form should the start time and end time be stored and read from*/
-//        }
+    public void speakTodayTasks(List<Task> tasks) {
+        int num = tasks.size();
+        StringBuilder speech = new StringBuilder();
+        speech.append("Hi Buddy, today you have " + num + " events.");
+        for (Task task : tasks) {
+            String taskName = task.getName();
+            speech.append(taskName);
+        }
+        speaker.speak(speech.toString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 }
