@@ -281,10 +281,10 @@ public class TaskNewEditActivity extends AppCompatActivity {
         endDate = new Date(intent.getLongExtra(Constants.EXTRA_END_DATE, -1));
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
-        textStartTime.setText(cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.DAY_OF_MONTH)
+        textStartTime.setText((cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)
                 + "/" + cal.get(Calendar.YEAR) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
         cal.setTime(endDate);
-        textEndTime.setText(cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.DAY_OF_MONTH)
+        textEndTime.setText((cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)
                 + "/" + cal.get(Calendar.YEAR) + " " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
         int categoryId = intent.getIntExtra(Constants.EXTRA_CATEGORY_ID, -1);
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
@@ -344,24 +344,25 @@ public class TaskNewEditActivity extends AppCompatActivity {
     }
 
     public void closeTask(MenuItem view) {
-        AlertDialog closingDialog = new AlertDialog.Builder(this).create();
-        closingDialog.setTitle("Task not saved");
-        closingDialog.setMessage("The current task is not saved. Are you sure you want to exit?");
-        closingDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-        closingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    }
-                });
-        closingDialog.show();
+//        AlertDialog closingDialog = new AlertDialog.Builder(this).create();
+//        closingDialog.setTitle("Task not saved");
+//        closingDialog.setMessage("The current task is not saved. Are you sure you want to exit?");
+//        closingDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        finish();
+//                    }
+//                });
+//        closingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                    }
+//                });
+//        closingDialog.show();
+        finish();
     }
 
     public void openNotes(View view) {
