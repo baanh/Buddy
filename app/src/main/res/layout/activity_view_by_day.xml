@@ -7,19 +7,19 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/getWeekDay"
+        android:id="@+id/txt_today"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="WeekDay"
+        android:text="To Day"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/getDate"
+        android:id="@+id/txt_today_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -27,7 +27,7 @@
         android:text="Date"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/getWeekDay" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_today" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
