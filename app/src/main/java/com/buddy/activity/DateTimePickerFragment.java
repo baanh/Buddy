@@ -46,7 +46,7 @@ public class DateTimePickerFragment extends DialogFragment {
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 DateTimePickerFragment.this.year = year;
                 // month of date picker starts from 0
-                DateTimePickerFragment.this.month = monthOfYear + 1;
+                DateTimePickerFragment.this.month = monthOfYear;
                 DateTimePickerFragment.this.dayOfMonth = dayOfMonth;
             }
         });
@@ -71,11 +71,11 @@ public class DateTimePickerFragment extends DialogFragment {
                         calendar.set(year, month, dayOfMonth, hour, minute);
                         if (args.getString(EXTRA_TIME).equals(START_TIME_LABEL)) {
                             TextView startTimeView = getActivity().findViewById(R.id.textview_start_time);
-                            startTimeView.setText(month + "/" + dayOfMonth + "/" + year + " " + hour + ":" + minute);
+                            startTimeView.setText((month + 1) + "/" + dayOfMonth + "/" + year + " " + hour + ":" + minute);
                             setStartTime(calendar.getTime());
                         } else if (args.getString(EXTRA_TIME).equals(END_TIME_LABEL)) {
                             TextView endTimeView = getActivity().findViewById(R.id.textview_end_time);
-                            endTimeView.setText(month + "/" + dayOfMonth + "/" + year + " " + hour + ":" + minute);
+                            endTimeView.setText((month + 1) + "/" + dayOfMonth + "/" + year + " " + hour + ":" + minute);
                             setEndTime(calendar.getTime());
                         }
                     }

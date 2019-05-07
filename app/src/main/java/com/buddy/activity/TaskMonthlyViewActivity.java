@@ -48,17 +48,16 @@ public class TaskMonthlyViewActivity extends AppCompatActivity implements TaskLi
         // Find tasks between today and tomorrow
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter
                 = new SimpleDateFormat("dd/MM/yyyy");
-        Date today = new Date();
         try {
-            today = formatter.parse(formatter.format(new Date()));
+            Date mToday = formatter.parse(formatter.format(new Date()));
+            Date mTomorrow = new Date(mToday.getTime() + (1000 * 60 * 60 * 24) - 1);
+
+            List<Task> tasks = taskViewModel.findTasksBetweenDate(mToday, mTomorrow);
+            taskListAdapter.submitList(tasks);
+            taskListAdapter.notifyDataSetChanged();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24) - 1);
-
-        List<Task> tasks = taskViewModel.findTasksBetweenDate(today, tomorrow);
-        taskListAdapter.submitList(tasks);
-        taskListAdapter.notifyDataSetChanged();
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override

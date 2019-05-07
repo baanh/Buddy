@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.buddy.adapters.TaskListAdapter;
@@ -35,6 +37,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
     private TaskViewModel mTaskViewModel;
+    private FloatingActionButton btnNewTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,15 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 Toast.makeText(MainActivity.this, "Task deleted", Toast.LENGTH_LONG).show();
             }
         }).attachToRecyclerView(mTaskListRecycleView);
+
+        btnNewTask = findViewById(R.id.btn_new_task);
+        btnNewTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newTaskIntent = new Intent(getApplicationContext(), TaskNewEditActivity.class);
+                startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
+            }
+        });
     }
 
     @Override
@@ -97,8 +109,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
         switch (item.getItemId()) {
             case R.id.push_notifications:
                 pushNotifications();
-                return true;
-            case R.id.action_favorite:
                 return true;
             case R.id.action_settings:
                 return true;
@@ -123,14 +133,6 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /*
-     * This function is revoked when user click Add a new Task
-     */
-    public void newEditTask(MenuItem view) {
-        Intent newTaskIntent = new Intent(this, TaskNewEditActivity.class);
-        startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
     }
 
     /*
