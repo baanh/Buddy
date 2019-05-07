@@ -88,7 +88,7 @@ public class TaskListAdapter extends ListAdapter<Task, TaskListAdapter.TaskViewH
         viewHolder.taskDescription.setText(task.getDescription());
         Calendar cal = Calendar.getInstance();
         cal.setTime(task.getStartDate());
-        viewHolder.taskSchedule.setText(cal.get(Calendar.MONTH) + "/"
+        viewHolder.taskSchedule.setText((cal.get(Calendar.MONTH) + 1) + "/"
                 + cal.get(Calendar.DAY_OF_MONTH) + "/"
                 + cal.get(Calendar.YEAR));
     }

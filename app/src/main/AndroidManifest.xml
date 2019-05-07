@@ -55,7 +55,7 @@
         <activity android:name="com.buddy.activity.CategoryNewEditActivity"></activity>
         <activity android:name="com.buddy.activity.NotesActivity"/>
         <activity android:name="com.buddy.activity.InviteeContactActivity" />
-        <activity android:name="com.buddy.util.Dialer" />
+        <activity android:name="com.buddy.activity.TaskDailyViewActivity" />
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.buddy.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +34,6 @@ public class InviteeContactActivity extends AppCompatActivity {
     private InviteeListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private SelectionTracker mSelectionTracker;
-    private TextView txtSelectionCount;
     private List<UserContact> selectedContacts;
     private String taskName;
     private String taskDue;
@@ -58,7 +58,6 @@ public class InviteeContactActivity extends AppCompatActivity {
         }
 
         selectedContacts = new ArrayList<>();
-        txtSelectionCount = findViewById(R.id.txt_selection_count);
         inviteeRecyclerView = findViewById(R.id.listView);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -92,7 +91,6 @@ public class InviteeContactActivity extends AppCompatActivity {
             @Override
             public void onSelectionRefresh() {
                 super.onSelectionRefresh();
-                txtSelectionCount.setText("Selection Count: 0");
             }
 
             @Override
@@ -103,17 +101,11 @@ public class InviteeContactActivity extends AppCompatActivity {
                 while (contactIterator.hasNext()) {
                     selectedContacts.add(contactIterator.next());
                 }
-                if (mSelectionTracker.hasSelection()) {
-                    txtSelectionCount.setText(String.format("Selection Count: %d", mSelectionTracker.getSelection().size()));
-                } else {
-                    txtSelectionCount.setText("Selection Count: 0");
-                }
             }
 
             @Override
             public void onSelectionRestored() {
                 super.onSelectionRestored();
-                txtSelectionCount.setText("Selection Count: 0");
             }
         });
 
@@ -149,7 +141,11 @@ public class InviteeContactActivity extends AppCompatActivity {
     }
 
     public void dial(View view) {
-        // TODO Display dial pad
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        if (selectedContacts.size() > 0) {
+            intent.setData(Uri.parse("tel:" + selectedContacts.get(0).getPhone()));
+        }
+        startActivity(intent);
     }
 
     String[] getEmailList() {
