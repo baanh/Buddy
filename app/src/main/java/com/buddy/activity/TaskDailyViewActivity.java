@@ -45,7 +45,7 @@ public class TaskDailyViewActivity extends AppCompatActivity
         setContentView(R.layout.activity_view_by_day);
 
         //Initialize text to speech engine
-        speaker = new TextToSpeech(getApplicationContext(), this);
+        speaker = new TextToSpeech(TaskDailyViewActivity.this , this);
         txtTodayDate = findViewById(R.id.txt_today_date);
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
@@ -69,7 +69,7 @@ public class TaskDailyViewActivity extends AppCompatActivity
                 taskDetail.add("Description: " + task.getDescription());
                 listHash.put(listDataHeader.get(listDataHeader.size() - 1), taskDetail);
             }
-            speakTodayTasks(tasks);
+            speakTodayTasks();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -98,11 +98,6 @@ public class TaskDailyViewActivity extends AppCompatActivity
         return true;
     }
 
-    // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public void speak(String output) {
-        speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
     @Override
     public void onInit(int status) {
         if (status != TextToSpeech.ERROR) {
@@ -118,8 +113,8 @@ public class TaskDailyViewActivity extends AppCompatActivity
         super.onPause();
     }
 
-    public void speakTodayTasks(List<Task> tasks) {
-        int num = tasks.size();
+    public void speakTodayTasks() {
+//        int num = tasks.size();
         speaker.speak("Hi Buddy, today you have events.", TextToSpeech.QUEUE_FLUSH, null);
 //        for (Task task : tasks) {
 //            String taskName = task.getName();
