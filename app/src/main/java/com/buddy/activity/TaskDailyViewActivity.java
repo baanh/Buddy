@@ -79,6 +79,8 @@ public class TaskDailyViewActivity extends AppCompatActivity
         taskListView.setAdapter(listAdapter);
 
         getSupportActionBar().setTitle("Day");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         FloatingActionButton btnNewTask = findViewById(R.id.btn_new_task);
         btnNewTask.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +90,12 @@ public class TaskDailyViewActivity extends AppCompatActivity
                 startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     // @TargetApi(Build.VERSION_CODES.LOLLIPOP)

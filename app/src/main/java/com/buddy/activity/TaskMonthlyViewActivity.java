@@ -74,6 +74,8 @@ public class TaskMonthlyViewActivity extends AppCompatActivity implements TaskLi
         });
 
         getSupportActionBar().setTitle("Month");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         FloatingActionButton btnNewTask = findViewById(R.id.btn_new_task);
         btnNewTask.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +85,12 @@ public class TaskMonthlyViewActivity extends AppCompatActivity implements TaskLi
                 startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     /*
