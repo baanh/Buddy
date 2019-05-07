@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_web) {
             Intent intentWeb = new Intent(this, WebBrowserActivity.class);
             startActivity(intentWeb);
+        } else if (id == R.id.nav_settings) {
+            Intent intentSettings = new Intent(this, SettingsActivity.class);
+            startActivity(intentSettings);
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
