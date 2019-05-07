@@ -111,8 +111,12 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 startActivity(newCategoryIntent);
                 return true;
             case R.id.monthly_view:
-                Intent intent = new Intent(this, TaskMonthlyViewActivity.class);
-                startActivity(intent);
+                Intent monthlyViewIntent = new Intent(this, TaskMonthlyViewActivity.class);
+                startActivity(monthlyViewIntent);
+                return true;
+            case R.id.daily_view:
+                Intent dailyViewIntent = new Intent(this, TaskDailyViewActivity.class);
+                startActivity(dailyViewIntent);
                 return true;
             case R.id.action_exit:
                 finish();

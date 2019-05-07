@@ -35,6 +35,11 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/daily_view"
+        android:title="Daily View"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/action_exit"
         android:title="Exit"
         app:showAsAction="never" />
