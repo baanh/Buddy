@@ -43,9 +43,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements TaskListAdapter.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener {
     private TaskViewModel mTaskViewModel;
-    private FloatingActionButton btnNewTask;
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity
             }
         }).attachToRecyclerView(mTaskListRecycleView);
 
-        btnNewTask = findViewById(R.id.btn_new_task);
+        FloatingActionButton btnNewTask = findViewById(R.id.btn_new_task);
         btnNewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +107,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();

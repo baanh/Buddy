@@ -2,12 +2,15 @@ package com.buddy.activity;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.buddy.adapters.TaskExpandableListAdapter;
 import com.buddy.entity.Task;
 import com.buddy.main.R;
+import com.buddy.util.Constants;
 import com.buddy.viewmodel.TaskViewModel;
 
 import java.text.ParseException;
@@ -73,6 +77,17 @@ public class TaskDailyViewActivity extends AppCompatActivity
         ExpandableListView taskListView = findViewById(R.id.task_expandable_list_view);
         ExpandableListAdapter listAdapter = new TaskExpandableListAdapter(this, listDataHeader, listHash);
         taskListView.setAdapter(listAdapter);
+
+        getSupportActionBar().setTitle("Day");
+
+        FloatingActionButton btnNewTask = findViewById(R.id.btn_new_task);
+        btnNewTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newTaskIntent = new Intent(getApplicationContext(), TaskNewEditActivity.class);
+                startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
+            }
+        });
     }
 
     // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
