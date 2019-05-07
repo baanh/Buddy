@@ -42,7 +42,9 @@
             android:name="com.buddy.activity.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name="com.buddy.activity.TaskMonthlyViewActivity" />
-        <activity android:name="com.buddy.activity.MainActivity">
+        <activity
+            android:name="com.buddy.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

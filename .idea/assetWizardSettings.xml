@@ -58,6 +58,17 @@
                                 <PersistentState>
                                   <option name="children">
                                     <map>
+                                      <entry key="foregroundClipArt">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="foregroundImage">
                                         <value>
                                           <PersistentState>
@@ -73,10 +84,11 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="$PROJECT_DIR$/../plus.xml" />
-                                      <entry key="foregroundLayerName" value="ic_plus" />
-                                      <entry key="outputName" value="ic_plus" />
+                                      <entry key="backgroundImage" value="/Volumes/DATA/side_nav_bar.xml" />
+                                      <entry key="backgroundLayerName" value="ic_navbar_back" />
+                                      <entry key="foregroundImage" value="/Volumes/DATA/side_nav_bar.xml" />
+                                      <entry key="foregroundLayerName" value="ic_navbar_front" />
+                                      <entry key="outputName" value="side_nav_bar" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -124,11 +136,6 @@
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>
