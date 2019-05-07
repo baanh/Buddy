@@ -13,7 +13,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -35,9 +39,12 @@ import com.buddy.viewmodel.TaskViewModel;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements TaskListAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity
+        implements TaskListAdapter.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener {
     private TaskViewModel mTaskViewModel;
     private FloatingActionButton btnNewTask;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,57 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 startActivityForResult(newTaskIntent, Constants.NEW_TASK_REQUEST);
             }
         });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_task) {
+            // Handle the camera action
+        } else if (id == R.id.nav_category) {
+            Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
+            startActivity(newCategoryIntent);
+        } else if (id == R.id.nav_month) {
+            Intent monthlyViewIntent = new Intent(this, TaskMonthlyViewActivity.class);
+            startActivity(monthlyViewIntent);
+        } else if (id == R.id.nav_day) {
+            Intent dailyViewIntent = new Intent(this, TaskDailyViewActivity.class);
+            startActivity(dailyViewIntent);
+        } else if (id == R.id.nav_speak) {
+
+        } else if (id == R.id.nav_web) {
+            Intent intentWeb = new Intent(this, WebBrowserActivity.class);
+            startActivity(intentWeb);
+        }
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
@@ -106,6 +164,9 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
             case R.id.push_notifications:
                 pushNotifications();
@@ -116,23 +177,8 @@ public class MainActivity extends AppCompatActivity implements TaskListAdapter.O
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
-            case R.id.action_new_category:
-                Intent newCategoryIntent = new Intent(this, CategoryNewEditActivity.class);
-                startActivity(newCategoryIntent);
-                return true;
-            case R.id.monthly_view:
-                Intent monthlyViewIntent = new Intent(this, TaskMonthlyViewActivity.class);
-                startActivity(monthlyViewIntent);
-                return true;
-            case R.id.daily_view:
-                Intent dailyViewIntent = new Intent(this, TaskDailyViewActivity.class);
-                startActivity(dailyViewIntent);
-                return true;
             case R.id.action_exit:
                 finish();
-            case R.id.action_web:
-                Intent intentWeb = new Intent(this, WebBrowserActivity.class);
-                startActivity(intentWeb);
             default:
                 return super.onOptionsItemSelected(item);
         }

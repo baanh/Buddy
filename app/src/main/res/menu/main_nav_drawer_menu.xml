@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_task"
+            android:title="Task" />
+        <item
+            android:id="@+id/nav_category"
+            android:title="Category" />
+        <item
+            android:id="@+id/nav_month"
+            android:title="Month" />
+        <item
+            android:id="@+id/nav_day"
+            android:title="Day" />
+    </group>
+
+    <item android:title="Utilities">
+        <menu>
+            <item
+                android:id="@+id/nav_speak"
+                android:title="Speak" />
+            <item
+                android:id="@+id/nav_web"
+                android:title="Search Web" />
+        </menu>
+    </item>
+
+</menu>

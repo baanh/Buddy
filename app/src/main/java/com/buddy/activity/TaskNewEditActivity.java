@@ -1,19 +1,14 @@
 package com.buddy.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.provider.ContactsContract;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,10 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import java.util.Locale;
 
 public class TaskNewEditActivity extends AppCompatActivity {
 
@@ -67,7 +58,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
 
     private MultiAutoCompleteTextView txtInvitees;
 
-    private TextToSpeech speaker;
     private static final String tag = "Widgets";
 
     @Override
@@ -149,51 +139,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
-        //Initialize text to speech engine
-        speaker = new TextToSpeech(this, (OnInitListener) this);
-    }
-
-    //speaks the contents of output
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP) //have no idea what this is but will show error without this line
-    public void speak(String output){
-        //	speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null);  //for APIs before 21
-        speaker.speak(output, TextToSpeech.QUEUE_FLUSH, null, "Id 0");
-    }
-
-    // Implements TextToSpeech.OnInitListener.
-    public void onInit(int status) {
-        // status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
-        if (status == TextToSpeech.SUCCESS) {
-            // Set preferred language to US english.
-            // If a language is not be available, the result will indicate it.
-            int result = speaker.setLanguage(Locale.US);
-
-            //int result = speaker.setLanguage(Locale.FRANCE);
-            if (result == TextToSpeech.LANG_MISSING_DATA ||
-                    result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                // Language data is missing or the language is not supported.
-                Log.e(tag, "Language is not available.");
-            } else {
-                // The TTS engine has been successfully initialized
-                speak("Please enter your bill amount");
-                Log.i(tag, "TTS Initialization successful.");
-            }
-        } else {
-            // Initialization failed.
-            Log.e(tag, "Could not initialize TextToSpeech.");
-        }
-    }
-
-    // on destroy
-    public void onDestroy(){
-
-        // shut down TTS engine
-        if(speaker != null){
-            speaker.stop();
-            speaker.shutdown();
-        }
-        super.onDestroy();
     }
 
     private class FetchUserContacts extends AsyncTask<Void, Void, List<UserContact>> {
@@ -308,7 +253,6 @@ public class TaskNewEditActivity extends AppCompatActivity {
      */
     public void saveTask(MenuItem view) {
         String name = editTaskName.getText().toString();
-        speak(name + "event is saved");
         String description = editTaskDescription.getText().toString();
         startDate = dateTimePicker.getStartTime() != null ?
                 dateTimePicker.getStartTime() : startDate;
