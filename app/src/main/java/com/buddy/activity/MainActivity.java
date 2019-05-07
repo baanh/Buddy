@@ -1,5 +1,7 @@
 package com.buddy.activity;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +30,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,18 +42,24 @@ import com.buddy.main.R;
 import com.buddy.util.Constants;
 import com.buddy.viewmodel.TaskViewModel;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements TaskListAdapter.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener {
     private TaskViewModel mTaskViewModel;
     private DrawerLayout drawerLayout;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Notification Image
+        bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.icons8task64)).getBitmap();
 
         // Get recycleView to populate a list of tasks
         RecyclerView mTaskListRecycleView = findViewById(R.id.my_task_list);
@@ -74,6 +85,11 @@ public class MainActivity extends AppCompatActivity
             public void onChanged(@Nullable List<Task> tasks) {
                 // Update the cached copy of the words in the adapter.
                 mTaskListAdapter.submitList(tasks);
+                for(int i = 0; i < tasks.size(); i++)
+                {
+                    cancelAlarm(tasks.get(i).getId());
+                    scheduleNotification(tasks.get(i),5);
+                }
             }
         });
 
@@ -89,6 +105,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                cancelAlarm(mTaskListAdapter.getTaskAt(viewHolder.getAdapterPosition()).getId());
                 mTaskViewModel.delete(mTaskListAdapter.getTaskAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(MainActivity.this, "Task deleted", Toast.LENGTH_LONG).show();
             }
@@ -165,16 +182,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        if (mDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
         switch (item.getItemId()) {
-            case R.id.push_notifications:
-                pushNotifications();
-                return true;
             case R.id.action_settings:
                 return true;
             case R.id.action_delete_all_tasks:
+                LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
+
+                for (int i = 0; i < taskList.getValue().size(); i++) {
+                    cancelAlarm(taskList.getValue().get(i).getId());
+                }
                 mTaskViewModel.deleteAllTasks();
                 Toast.makeText(getApplicationContext(), "All task deleted", Toast.LENGTH_LONG).show();
                 return true;
@@ -252,37 +268,66 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void pushNotifications() {
-        String channelID = "001";
-        CharSequence channelName = "First Channel";
+    public void scheduleNotification (Task task, int reminderTime) {
+        String notice = "Reminder for " + task.getDescription() + " at " + String.format("%02d:%02d", task.getStartDate().getHours(), task.getStartDate().getMinutes());
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel notificationChannel = new NotificationChannel(channelID, channelName, importance);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        Bitmap bitmap = ((BitmapDrawable)getResources().getDrawable(R.drawable.icons8task64)).getBitmap();
+        String channelID = Integer.toString(task.getId());
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelID)
                 .setLargeIcon(bitmap)
-                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap));
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(contentIntent)
+                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap))
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentTitle(task.getName())
+                .setContentText(notice)
                 .setSmallIcon(R.drawable.ic_notifications_custom);
 
-        LiveData<List<Task>> taskList = mTaskViewModel.getAllTasks();
+        Date noticeDate = new Date(task.getStartDate().getTime() - (reminderTime * 60 * 1000));
 
-        for (int i = 0; i < taskList.getValue().size(); i++) {
-            mBuilder
-                    .setContentTitle(taskList.getValue().get(i).getName())
-                    .setContentText(taskList.getValue().get(i).getDescription());
-            notificationManager.notify(i, mBuilder.build());
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.YEAR, noticeDate.getYear() + 1900);
+        cal.set(Calendar.MONTH, noticeDate.getMonth());
+        cal.set(Calendar.DATE, noticeDate.getDate());
+        cal.set(Calendar.HOUR_OF_DAY, noticeDate.getHours());
+        cal.set(Calendar.MINUTE, noticeDate.getMinutes());
+        cal.set(Calendar.SECOND, 0);
+
+        Log.i("Alarm Time", cal.getTime().toString());
+
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent activity = PendingIntent.getActivity(this, task.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(activity);
+
+        Notification notification = mBuilder.build();
+
+        Intent notificationIntent = new Intent(this, BroadcastManager.class);
+        notificationIntent.putExtra(BroadcastManager.NOTIFICATION_ID, task.getId());
+        notificationIntent.putExtra(BroadcastManager.NOTIFICATION, notification);
+        notificationIntent.putExtra(BroadcastManager.NOTIFICATION_CHANNEL, channelID);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
         }
+        else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        }
+        Log.i("Alarm Id", Integer.toString(task.getId()));
+    }
 
+    public void cancelAlarm(int ID)
+    {
+        Intent notificationIntent = new Intent(this, BroadcastManager.class);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, ID, notificationIntent, PendingIntent.FLAG_NO_CREATE);
+        if (pendingIntent != null)
+        {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+            Log.i("Alarm Id", Integer.toString(ID));
+        }
     }
 }
